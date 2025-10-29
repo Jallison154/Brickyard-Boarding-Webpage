@@ -1,0 +1,23 @@
+# Commands to run in Proxmox CT (Container)
+
+# 1. Update system packages
+apt-get update && apt-get upgrade -y
+
+# 2. Install git if not already installed
+apt-get install -y git
+
+# 3. Clone the repository
+cd /root
+git clone https://github.com/Jallison154/Brickyard-Boarding-Webpage.git
+
+# 4. Navigate to project directory
+cd Brickyard-Boarding-Webpage
+
+# 5. Make installation script executable
+chmod +x install.sh
+
+# 6. Run the installation script
+./install.sh
+
+# That's it! Your website will be accessible at http://YOUR_CONTAINER_IP
+
