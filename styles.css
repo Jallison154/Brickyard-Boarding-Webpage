@@ -1183,6 +1183,36 @@ input[type="submit"].btn-confirm:hover {
     .contact-form-wrapper {
         padding: 1.5rem;
     }
+
+    /* Hours: tighter typography and spacing */
+    .section-subtitle {
+        font-size: 1rem;
+    }
+    .hours-section {
+        padding: 0.75rem;
+        border-radius: 10px;
+    }
+    .hours-section h5 {
+        font-size: 0.95rem;
+        letter-spacing: 0.3px;
+        margin-bottom: 0.5rem;
+    }
+    .hours-points li {
+        font-size: 0.95rem;
+        line-height: 1.4;
+        padding: 0.2rem 0;
+    }
+    .hours-warning {
+        padding: 0.5rem;
+        font-size: 0.95rem;
+    }
+    .holiday-list li {
+        padding: 0.4rem 0;
+    }
+    .holiday-note,
+    .hours-note {
+        font-size: 0.8rem;
+    }
 }
 
 /* Boarding Agreement */
