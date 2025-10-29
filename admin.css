@@ -13,7 +13,6 @@
     transform: scale(0.875);
     transform-origin: top left;
     width: 114.29%; /* Compensate for 12.5% reduction */
-    height: 114.29%;
 }
 
 [data-theme="dark"] .admin-body {
@@ -134,7 +133,6 @@
     transform: scale(0.875);
     transform-origin: top left;
     width: 114.29%; /* Compensate for 12.5% reduction */
-    height: 114.29%;
 }
 
 .admin-nav {
