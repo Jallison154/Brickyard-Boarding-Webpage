@@ -37,6 +37,29 @@
     background: var(--bg-white);
 }
 
+.login-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.login-logo .logo-image {
+    height: 80px;
+    width: auto;
+    max-width: 280px;
+    object-fit: contain;
+}
+
+.login-logo .logo-text {
+    text-align: center;
+}
+
+.login-logo .logo-text h2 {
+    color: var(--primary-color);
+    margin: 0;
+}
+
 .login-box h2 {
     color: var(--primary-color);
     margin-bottom: 0.5rem;
@@ -180,6 +203,24 @@
     padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
+    align-items: center;
+}
+
+.admin-logo {
+    display: flex;
+    align-items: center;
+    height: 50px;
+}
+
+.admin-logo-image {
+    height: 45px;
+    width: auto;
+    max-width: 250px;
+    object-fit: contain;
+}
+
+.admin-logo .logo-text {
+    display: flex;
     align-items: center;
 }
 

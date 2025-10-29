@@ -85,6 +85,24 @@ body {
     padding: 1rem 20px;
 }
 
+.logo {
+    display: flex;
+    align-items: center;
+    height: 60px;
+}
+
+.logo-image {
+    height: 50px;
+    width: auto;
+    object-fit: contain;
+    max-width: 300px;
+}
+
+.logo-text {
+    display: flex;
+    align-items: baseline;
+}
+
 .logo h2 {
     font-size: 1.5rem;
     color: var(--primary-color);
@@ -1048,6 +1066,11 @@ input[type="submit"].btn-confirm:hover {
 
     .nav-menu li {
         padding: 0.5rem 20px;
+    }
+
+    .logo-image {
+        height: 40px;
+        max-width: 200px;
     }
 
     .hero-title {
