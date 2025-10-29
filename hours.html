@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Brickyard Boarding Kennel Hours and Holiday Schedule">
+    <title>Hours | Brickyard Boarding Kennel</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <a href="index.html" style="display:flex;align-items:center;text-decoration:none;color:inherit">
+                    <img src="resources/images/logo.png" alt="Brickyard Boarding Kennel" class="logo-image" onerror="this.style.display='none';">
+                </a>
+            </div>
+            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html#home" class="nav-link">Home</a></li>
+                <li><a href="index.html#boarding" class="nav-link">Boarding</a></li>
+                <li><a href="index.html#grooming" class="nav-link">Grooming</a></li>
+                <li><a href="hours.html" class="nav-link">Hours</a></li>
+                <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                <svg class="theme-icon sun" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2"/>
+                    <path d="M12 1v3M12 20v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M1 12h3M20 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                <svg class="theme-icon moon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2"/>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hours Page Content -->
+    <section class="section" style="padding-top: 120px;">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Hours</h2>
+                <p class="section-subtitle">Please call to schedule appointments</p>
+            </div>
+
+            <div class="hours-details">
+                <div class="hours-section">
+                    <h5>BY APPOINTMENT ONLY</h5>
+                    <p><strong>PLEASE CALL FOR APPOINTMENT TIME</strong></p>
+                </div>
+
+                <div class="hours-section">
+                    <h5>Monday through Friday</h5>
+                    <p>Not earlier than 8am</p>
+                    <p>No later than 6pm</p>
+                    <p class="hours-note">*Exceptions for out of town clients or family emergencies only</p>
+                </div>
+
+                <div class="hours-section">
+                    <h5>SATURDAY</h5>
+                    <p><strong>8AM - 10AM ONLY</strong></p>
+                    <p class="hours-warning">You will need to pick up on Saturday between 8am - 10am if you do not want to pay for two more days</p>
+                </div>
+
+                <div class="hours-section">
+                    <h5>SUNDAY CLOSED</h5>
+                    <p>With an ONE HOUR convenience hour</p>
+                    <p><strong>EVERYONE PAYS FOR SUNDAY</strong></p>
+                    <p>5pm to 6pm for drop off and pickup</p>
+                </div>
+
+                <div class="hours-section holidays">
+                    <h5>Holidays - We are closed:</h5>
+                    <ul class="holiday-list">
+                        <li>Easter Sunday</li>
+                        <li>July 4th</li>
+                        <li>Thanksgiving CLOSED Thursday and CLOSED Friday after<br>
+                            <span class="holiday-note">Dogs dropped off by Wednesday by 6pm</span>
+                        </li>
+                        <li>Christmas Eve & Christmas Day<br>
+                            <span class="holiday-note">Dogs must be dropped off December 23 by 6pm</span>
+                        </li>
+                    </ul>
+                    <p class="holiday-note">Other holidays (Memorial Day, Labor Day, New Years Day) will have "Sunday Hours" - 1 hour pickup 5-6pm and be charged accordingly.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Brickyard Boarding Kennel</h3>
+                    <p>Caring for pets since 1995</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html#home">Home</a></li>
+                        <li><a href="index.html#about">About</a></li>
+                        <li><a href="index.html#boarding">Services</a></li>
+                        <li><a href="index.html#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook" class="social-link">
+                            <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M18 2H15C13.6739 2 12.4021 2.52678 11.4645 3.46447C10.5268 4.40215 10 5.67392 10 7V10H7V14H10V22H14V14H17L18 10H14V7C14 6.73478 14.1054 6.48043 14.2929 6.29289C14.4804 6.10536 14.7348 6 15 6H18V2Z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 1995-2025 Brickyard Boarding Kennel. All rights reserved.</p>
+                <p style="margin-top: 0.5rem; opacity: 0.5; font-size: 0.8rem;">
+                    <a href="admin.html" style="color: rgba(255, 255, 255, 0.7); text-decoration: none;">Admin</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="theme.js"></script>
+</body>
+</html>
+
+

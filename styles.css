@@ -18,6 +18,7 @@
     --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.15);
     --transition: all 0.3s ease;
+    --navbar-height: 72px;
 }
 
 /* Dark Mode Variables */
@@ -44,6 +45,7 @@ body {
     color: var(--text-dark);
     line-height: 1.6;
     overflow-x: hidden;
+    padding-top: var(--navbar-height);
     transform: scale(0.875);
     transform-origin: top left;
     width: 114.29%; /* Compensate for 12.5% reduction */
@@ -1371,7 +1373,15 @@ input[type="submit"].btn-confirm:hover {
 }
 
 .hero-buttons {
-    animation: fadeInUp 1s ease-out 0.8s both;
+    display: none;
+}
+.inline-link {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+.inline-link:hover {
+    color: var(--accent-color);
 }
 
 @keyframes fadeInUp {
@@ -1548,5 +1558,168 @@ input[type="submit"].btn-confirm:hover {
 .social-link:hover {
     transform: translateY(-3px) scale(1.1);
     color: var(--accent-color);
+}
+
+/* Embedded map */
+.map-embed {
+    margin-top: 0.75rem;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    background: var(--bg-light);
+    aspect-ratio: 16 / 9;
+}
+
+.map-embed iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+}
+
+/* Hours Section Styling */
+.hours-item {
+    grid-column: 1 / -1;
+    margin-top: 2rem;
+}
+
+.hours-content {
+    width: 100%;
+}
+
+.hours-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.hours-section {
+    background: var(--bg-white);
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    border-left: 4px solid var(--primary-color);
+    transition: all 0.3s ease;
+}
+
+.hours-section:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.hours-section h5 {
+    color: var(--primary-color);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.hours-section p {
+    margin: 0.5rem 0;
+    color: var(--text-dark);
+    line-height: 1.5;
+}
+
+.hours-points {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 0.5rem 0;
+}
+
+.hours-points li {
+    padding: 0.25rem 0;
+    color: var(--text-dark);
+}
+
+.hours-note {
+    font-style: italic;
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin-top: 0.75rem;
+}
+
+.hours-warning {
+    background: rgba(244, 162, 97, 0.1);
+    padding: 0.75rem;
+    border-radius: 6px;
+    border-left: 3px solid var(--accent-color);
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+.holidays {
+    background: rgba(74, 124, 89, 0.05);
+    border-left-color: var(--secondary-color);
+}
+
+.holiday-list {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+}
+
+.holiday-list li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(139, 115, 85, 0.1);
+    color: var(--text-dark);
+}
+
+.holiday-list li:last-child {
+    border-bottom: none;
+}
+
+.holiday-note {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    font-style: italic;
+    margin-top: 0.5rem;
+    display: block;
+}
+
+/* Dark mode for hours section */
+[data-theme="dark"] .hours-section {
+    background: #333;
+    border-left-color: var(--primary-color);
+}
+
+[data-theme="dark"] .hours-section h5 {
+    color: var(--primary-color);
+}
+
+[data-theme="dark"] .hours-section p {
+    color: var(--text-dark);
+}
+
+[data-theme="dark"] .holidays {
+    background: rgba(74, 124, 89, 0.1);
+}
+
+[data-theme="dark"] .holiday-list li {
+    color: var(--text-dark);
+    border-bottom-color: rgba(139, 115, 85, 0.2);
+}
+
+[data-theme="dark"] .hours-warning {
+    background: rgba(244, 162, 97, 0.15);
+    color: var(--text-dark);
+}
+
+/* Mobile responsiveness for hours */
+@media (max-width: 768px) {
+    .hours-details {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .hours-section {
+        padding: 1rem;
+    }
+    
+    .hours-section h5 {
+        font-size: 1rem;
+    }
 }
 
