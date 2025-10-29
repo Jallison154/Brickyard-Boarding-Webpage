@@ -69,12 +69,10 @@
     color: var(--primary-color);
     margin-bottom: 0.5rem;
     font-size: 2rem;
+    text-align: center;
 }
 
-.login-subtitle {
-    color: var(--text-light);
-    margin-bottom: 2rem;
-}
+.back-link { display: block; text-align: center; margin-top: 1rem; }
 
 .login-box .form-group {
     margin-bottom: 1.5rem;
@@ -85,6 +83,12 @@
     margin-bottom: 0.5rem;
     color: var(--text-dark);
     font-weight: 500;
+}
+
+/* Make login button full-width on the login box */
+.login-box .btn {
+    width: 100%;
+    display: block;
 }
 
 .login-box input {
@@ -245,7 +249,7 @@
     margin: 0 auto;
     padding: 1rem 2rem;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     position: relative;
 }
@@ -1547,10 +1551,11 @@
     }
 
     .admin-nav-actions {
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-        justify-content: center;
+        position: static;
+        left: auto;
+        transform: none;
+        justify-content: flex-end;
+        margin-left: auto;
     }
 
     .admin-nav-actions .btn {
@@ -2992,10 +2997,12 @@
     }
 
     .admin-nav-actions {
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
+        position: static;
+        left: auto;
+        transform: none;
         gap: 0.5rem;
+        margin-left: auto;
+        justify-content: flex-end;
     }
 
     .admin-nav-actions .btn {

@@ -101,7 +101,12 @@ function getDogPhotoForTest(animalName, breed, index, animalType = 'Dog') {
     return generatePlaceholderDogPhoto(animalName, breed, animalType);
 }
 
-function generateTestData() {
+function generateTestData(opts = {}) {
+    const {
+        numClients = 150,
+        minAnimalsPerClient = 1,
+        maxAnimalsPerClient = 2
+    } = opts;
     const dogBreeds = [
         'Golden Retriever', 'Labrador Retriever', 'German Shepherd', 'Bulldog', 'Beagle',
         'French Bulldog', 'Poodle', 'Rottweiler', 'Yorkshire Terrier', 'Dachshund',
@@ -176,12 +181,13 @@ function generateTestData() {
         contactSubmissions.push(submission);
     }
     
-    // Generate 150 clients with 1-3 dogs each
-    for (let i = 0; i < 150; i++) {
+    // Generate clients with configurable number of animals
+    for (let i = 0; i < numClients; i++) {
         const familyName = `${lastNames[i % lastNames.length]} Family`;
         const contactName = `${humanFirstNames[i % humanFirstNames.length]} ${lastNames[i % lastNames.length]}`;
         
-        const numDogs = Math.floor(Math.random() * 3) + 1; // 1-3 dogs
+        const span = Math.max(0, (maxAnimalsPerClient | 0) - (minAnimalsPerClient | 0));
+        const numDogs = (minAnimalsPerClient | 0) + Math.floor(Math.random() * (span + 1));
         const dogs = [];
         
         for (let j = 0; j < numDogs; j++) {

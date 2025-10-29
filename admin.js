@@ -1,7 +1,39 @@
 // Admin Authentication and Dashboard
 
-// Default password - CHANGE THIS IN PRODUCTION
+// Default password (used only to derive a default SHA-256 hash at runtime)
 const DEFAULT_PASSWORD = 'brickyard2025';
+
+// Crypto helpers
+async function sha256Hex(text) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(text);
+    const digest = await crypto.subtle.digest('SHA-256', data);
+    const bytes = Array.from(new Uint8Array(digest));
+    return bytes.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function getSavedPasswordHash() {
+    // Prefer stored hash
+    const storedHash = localStorage.getItem('adminPasswordHash');
+    if (storedHash) return storedHash;
+
+    // Migrate old plain-text password if it exists
+    const legacyPlain = localStorage.getItem('adminPassword');
+    if (legacyPlain) {
+        const hashed = await sha256Hex(legacyPlain);
+        localStorage.setItem('adminPasswordHash', hashed);
+        localStorage.removeItem('adminPassword');
+        return hashed;
+    }
+
+    // Fall back to default password hash (not stored)
+    return await sha256Hex(DEFAULT_PASSWORD);
+}
+
+async function setNewAdminPassword(newPassword) {
+    const hashed = await sha256Hex(newPassword);
+    localStorage.setItem('adminPasswordHash', hashed);
+}
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
@@ -11,6 +43,8 @@ document.addEventListener('DOMContentLoaded', () => {
     setupSearch();
     setupFilters();
     loadSubmissions();
+    setupGenerateTestDataButton();
+    setupClearTestDataButton();
     
     // Setup tabs after all scripts are loaded
     setTimeout(() => {
@@ -42,9 +76,49 @@ function loadInitialData() {
     }
 }
 
+// Hook up Generate Test Data button (clients tab)
+function setupGenerateTestDataButton() {
+    const btn = document.getElementById('generateTestDataBtn');
+    if (!btn || typeof window.generateTestData !== 'function') return;
+    btn.addEventListener('click', () => {
+        const confirmed = confirm('Generate 150 clients with 1-2 animals each?');
+        if (!confirmed) return;
+        const result = window.generateTestData({ numClients: 150, minAnimalsPerClient: 1, maxAnimalsPerClient: 2 });
+        // Some generators return synchronously; ensure UI refresh
+        setTimeout(() => {
+            if (typeof loadClients === 'function') {
+                loadClients();
+            }
+            alert('Test data generated. Open Clients tab to view.');
+        }, 50);
+    });
+}
+
+// Hook up Clear Test Data button
+function setupClearTestDataButton() {
+    const btn = document.getElementById('clearTestDataBtn');
+    if (!btn || typeof window.clearTestData !== 'function') return;
+    btn.addEventListener('click', () => {
+        const cleared = window.clearTestData();
+        if (cleared && typeof loadClients === 'function') {
+            setTimeout(() => loadClients(), 50);
+        }
+    });
+}
+
 // Check if user is authenticated
 function checkAuth() {
-    const isAuthenticated = sessionStorage.getItem('adminAuthenticated') === 'true';
+    // Enforce 1-day timeout using a persistent expiry in localStorage
+    const expiry = parseInt(localStorage.getItem('adminAuthExpiry') || '0', 10);
+    const now = Date.now();
+    const notExpired = expiry && expiry > now;
+
+    // If a valid, unexpired session exists in localStorage, ensure this tab session is marked
+    if (notExpired && sessionStorage.getItem('adminAuthenticated') !== 'true') {
+        sessionStorage.setItem('adminAuthenticated', 'true');
+    }
+
+    const isAuthenticated = sessionStorage.getItem('adminAuthenticated') === 'true' && notExpired;
     const loginContainer = document.getElementById('loginContainer');
     const adminDashboard = document.getElementById('adminDashboard');
 
@@ -57,6 +131,9 @@ function checkAuth() {
             loadInitialData();
         }, 100);
     } else {
+        // Clear stale state
+        sessionStorage.removeItem('adminAuthenticated');
+        localStorage.removeItem('adminAuthExpiry');
         loginContainer.style.display = 'flex';
         adminDashboard.style.display = 'none';
     }
@@ -67,23 +144,29 @@ function setupLogin() {
     const loginForm = document.getElementById('loginForm');
     const errorMessage = document.getElementById('loginError');
 
-    // Check if password is set in localStorage, otherwise use default
-    const savedPassword = localStorage.getItem('adminPassword') || DEFAULT_PASSWORD;
-
     loginForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        const password = document.getElementById('password').value;
+        (async () => {
+            const entered = document.getElementById('password').value;
+            const [savedHash, enteredHash] = await Promise.all([
+                getSavedPasswordHash(),
+                sha256Hex(entered)
+            ]);
 
-        if (password === savedPassword) {
-            sessionStorage.setItem('adminAuthenticated', 'true');
-            checkAuth();
-        } else {
-            errorMessage.textContent = 'Incorrect password. Please try again.';
-            errorMessage.classList.add('show');
-            setTimeout(() => {
-                errorMessage.classList.remove('show');
-            }, 3000);
-        }
+            if (enteredHash === savedHash) {
+                sessionStorage.setItem('adminAuthenticated', 'true');
+                // Set expiry for 24 hours from now
+                const oneDayMs = 24 * 60 * 60 * 1000;
+                localStorage.setItem('adminAuthExpiry', String(Date.now() + oneDayMs));
+                checkAuth();
+            } else {
+                errorMessage.textContent = 'Incorrect password. Please try again.';
+                errorMessage.classList.add('show');
+                setTimeout(() => {
+                    errorMessage.classList.remove('show');
+                }, 3000);
+            }
+        })();
     });
 }
 
@@ -92,6 +175,7 @@ function setupLogout() {
     const logoutBtn = document.getElementById('logoutBtn');
     logoutBtn.addEventListener('click', () => {
         sessionStorage.removeItem('adminAuthenticated');
+        localStorage.removeItem('adminAuthExpiry');
         checkAuth();
         window.location.href = 'admin.html';
     });
