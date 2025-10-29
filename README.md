@@ -1,62 +1,79 @@
 # Brickyard Boarding Kennel Website
 
-A modern, responsive website for Brickyard Boarding Kennel located in Billings, MT (Lockwood).
+A modern, responsive website for Brickyard Boarding Kennel in Billings, MT. Built with HTML5, CSS3, and JavaScript, featuring a clean design and smooth animations.
 
 ## Features
 
-- 🎨 Modern, clean design with smooth animations
-- 📱 Fully responsive (mobile, tablet, desktop)
-- 🖼️ Photo gallery with lightbox functionality
-- 📧 Contact form
-- ⚡ Fast loading with optimized images
-- ♿ Accessible navigation and structure
+- **Responsive Design**: Works perfectly on desktop, tablet, and mobile devices
+- **Dark Mode**: Toggle between light and dark themes
+- **Admin Panel**: Complete management system for appointments, clients, and operations
+- **Photo Gallery**: Showcase facility and happy pets
+- **Contact Form**: Easy communication with potential clients
+- **Modern Animations**: Smooth hover effects and transitions
 
-## Project Structure
+## Quick Start
+
+### For Proxmox CT Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/Jallison154/Brickyard-Boarding-Webpage.git
+   cd Brickyard-Boarding-Webpage
+   ```
+
+2. **Run the installation script:**
+   ```bash
+   chmod +x install.sh
+   ./install.sh
+   ```
+
+3. **Access your website:**
+   - Main site: `http://YOUR_CONTAINER_IP`
+   - Admin panel: `http://YOUR_CONTAINER_IP/admin.html`
+
+### For Updates
+
+```bash
+git pull origin main
+./update.sh
+```
+
+## File Structure
 
 ```
-Brickyard Boarding Webpage/
-├── index.html          # Main HTML file
-├── styles.css          # Stylesheet
-├── script.js           # JavaScript functionality
+├── index.html              # Main website
+├── admin.html              # Admin dashboard
+├── styles.css              # Main stylesheet
+├── admin.css               # Admin panel styles
+├── script.js               # Main JavaScript
+├── admin.js                # Admin panel JavaScript
+├── theme.js                # Dark mode functionality
 ├── resources/
-│   └── images/         # Image assets
-├── .gitignore          # Git ignore rules
-└── README.md           # This file
+│   └── images/             # Website images and logo
+├── install.sh              # Installation script
+├── update.sh               # Update script
+└── SETUP_COMMANDS.txt      # Manual setup instructions
 ```
 
-## Getting Started
+## Admin Features
 
-Simply open `index.html` in a web browser to view the website. No build process or server required.
+- **Client Management**: Add, edit, and manage client information
+- **Appointment Scheduling**: Book and manage boarding appointments
+- **Today's Operations**: View current check-ins and arrivals
+- **Care Management**: Track pet care and special needs
+- **Data Export**: Generate reports and export data
 
-### Local Development
+## Browser Support
 
-1. Clone this repository
-2. Open `index.html` in your preferred browser
-3. Make changes to HTML, CSS, or JavaScript files as needed
-
-## Technologies Used
-
-- HTML5
-- CSS3 (with CSS Grid and Flexbox)
-- Vanilla JavaScript (ES6+)
-- Google Fonts (Poppins)
-
-## Image Management
-
-Images are stored locally in the `resources/images/` folder. To add new images:
-
-1. Place images in `resources/images/`
-2. Update the `src` attributes in `index.html`
-3. Ensure images are optimized for web (recommended: JPEG for photos, PNG for graphics)
-
-## Contact
-
-For inquiries about Brickyard Boarding Kennel, please use the contact form on the website or call for an appointment.
-
-**Location:** Billings, MT (Lockwood)  
-**Hours:** By Appointment Only
+- Chrome (recommended)
+- Firefox
+- Safari
+- Edge
 
 ## License
 
 © 1995-2025 Brickyard Boarding Kennel. All rights reserved.
 
+## Support
+
+For technical support or questions about the website, please contact the development team.

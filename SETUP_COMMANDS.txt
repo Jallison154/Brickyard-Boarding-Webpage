@@ -1,0 +1,29 @@
+# Commands for Brickyard Boarding Kennel with PUBLIC repository
+# Much simpler - no authentication needed!
+
+# 1. Update system packages
+apt-get update && apt-get upgrade -y
+
+# 2. Install required packages
+apt-get install -y git nginx
+
+# 3. Clone the public repository
+cd /root
+git clone https://github.com/Jallison154/Brickyard-Boarding-Webpage.git
+
+# 4. Navigate to project directory
+cd Brickyard-Boarding-Webpage
+
+# 5. Make installation script executable
+chmod +x install.sh
+
+# 6. Run the installation script
+./install.sh
+
+# That's it! Your website will be accessible at http://YOUR_CONTAINER_IP
+
+# For future updates, just run:
+# cd /root/Brickyard-Boarding-Webpage
+# git pull origin main
+# rsync -av --exclude='.git/' --exclude='install.sh' --exclude='*.md' --exclude='*.py' --exclude='*.ps1' --exclude='*.js' --exclude='*.html' --exclude='CT_*.txt' . /var/www/brickyard-kennel/
+# systemctl restart nginx
