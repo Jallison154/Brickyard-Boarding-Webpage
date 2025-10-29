@@ -79,12 +79,35 @@ function loadInitialData() {
 // Hook up Generate Test Data button (clients tab)
 function setupGenerateTestDataButton() {
     const btn = document.getElementById('generateTestDataBtn');
-    if (!btn || typeof window.generateTestData !== 'function') return;
-    btn.addEventListener('click', () => {
+    if (!btn) return;
+
+    const ensureLoaded = () => new Promise((resolve, reject) => {
+        if (typeof window.generateTestData === 'function') return resolve();
+        const existing = document.querySelector('script[data-testdata="1"]');
+        if (existing) {
+            existing.addEventListener('load', () => resolve());
+            existing.addEventListener('error', () => reject(new Error('Failed to load test data script')));
+            return;
+        }
+        const s = document.createElement('script');
+        s.src = `generate-test-data.js?v=${Date.now()}`;
+        s.async = false;
+        s.setAttribute('data-testdata', '1');
+        s.onload = () => resolve();
+        s.onerror = () => reject(new Error('Failed to load test data script'));
+        document.body.appendChild(s);
+    });
+
+    btn.addEventListener('click', async () => {
+        try {
+            await ensureLoaded();
+        } catch (e) {
+            alert('Could not load generator. Please hard-refresh and try again.');
+            return;
+        }
         const confirmed = confirm('Generate 150 clients with 1-2 animals each?');
         if (!confirmed) return;
-        const result = window.generateTestData({ numClients: 150, minAnimalsPerClient: 1, maxAnimalsPerClient: 2 });
-        // Some generators return synchronously; ensure UI refresh
+        window.generateTestData({ numClients: 150, minAnimalsPerClient: 1, maxAnimalsPerClient: 2 });
         setTimeout(() => {
             if (typeof loadClients === 'function') {
                 loadClients();

@@ -1130,6 +1130,17 @@
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 }
 
+/* Keep Quick Access modal size stable across steps */
+#quickAccessModal .modal-content {
+    max-width: 720px;
+    width: 100%;
+    min-height: 520px; /* prevent height jumps between steps */
+}
+
+#quickAccessModal .modal-body {
+    overflow-y: auto;
+}
+
 .modal-small {
     max-width: 500px;
 }
@@ -1224,6 +1235,33 @@
     font-size: 0.95rem;
     font-weight: 500;
     color: var(--text-dark);
+}
+
+/* Readonly title look for preselected fields in appointment modal */
+.selected-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    padding: 0.6rem 0.75rem;
+    border: 2px solid var(--bg-light);
+    border-radius: 10px;
+    background: var(--bg-white);
+}
+
+/* Segmented buttons for service type */
+.service-type-btn {
+    background: var(--bg-light);
+    color: var(--text-dark);
+    border: 2px solid var(--bg-light);
+    border-radius: 10px;
+    padding: 0.6rem 0.9rem;
+    flex: 1; /* fill row so both buttons match input width */
+    text-align: center;
+}
+.service-type-btn.active {
+    background: var(--primary-color);
+    color: #fff;
+    border-color: var(--primary-color);
 }
 
 .modal-header {

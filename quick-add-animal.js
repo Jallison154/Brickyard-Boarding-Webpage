@@ -279,85 +279,101 @@ function generateReviewContent() {
 }
 
 // Handle form submission
+function saveQuickAddClient() {
+    // Validate animals list
+    if (animalsList.length === 0) {
+        alert('Please add at least one animal');
+        return false;
+    }
+
+    // Get all form values
+    const clientName = document.getElementById('quickClientName').value.trim();
+    const clientPhone = document.getElementById('quickClientPhone').value.trim();
+    const clientEmail = document.getElementById('quickClientEmail').value.trim();
+    const emergencyPhone = document.getElementById('quickEmergencyPhone').value.trim();
+
+    // Create client object with all animals
+    const clientId = 'client_' + Date.now();
+
+    // Extract last name from client name
+    const nameParts = clientName.trim().split(' ');
+    const lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : nameParts[0];
+
+    const dogs = animalsList.map(animal => ({
+        id: 'dog_' + Date.now() + '_' + Math.random(),
+        name: animal.name,
+        lastName: lastName,
+        animalType: animal.animalType,
+        breed: animal.breed,
+        age: animal.age,
+        weight: animal.weight,
+        foodRequirements: animal.foodRequirements,
+        notes: animal.notes,
+        gender: '',
+        color: '',
+        vaccinations: '',
+        medications: [],
+        documents: []
+    }));
+
+    const client = {
+        id: clientId,
+        familyName: lastName,
+        contactName: clientName,
+        phone: clientPhone,
+        email: clientEmail,
+        emergencyPhone: emergencyPhone,
+        dogs: dogs,
+        notes: ''
+    };
+
+    try {
+        const clients = getClients();
+        clients.push(client);
+        localStorage.setItem('clients', JSON.stringify(clients));
+    } catch (e) {
+        console.error('Error saving client:', e);
+        alert('Error saving client.');
+        return false;
+    }
+
+    resetFormTracking('quickAddAnimalForm');
+
+    // Switch to Clients tab and refresh list
+    const clientsTabBtn = document.querySelector('.tab-btn[data-tab="clients"]');
+    if (clientsTabBtn) clientsTabBtn.click();
+    if (typeof loadClients === 'function') {
+        loadClients();
+    }
+
+    // Close modal
+    closeQuickAddAnimalModal();
+
+    // After a short delay (to allow render), open the new client's details
+    setTimeout(() => {
+        if (typeof viewClientDetails === 'function') {
+            viewClientDetails(clientId);
+        }
+    }, 150);
+
+    // Optional toast/alert
+    alert(`✓ Added ${clientName} with ${animalsList.length} animal${animalsList.length !== 1 ? 's' : ''} to Clients.`);
+    return true;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('quickAddAnimalForm');
     if (form) {
-        form.addEventListener('submit', async (e) => {
+        form.addEventListener('submit', (e) => {
             e.preventDefault();
-            
-            // Validate animals list
-            if (animalsList.length === 0) {
-                alert('Please add at least one animal');
-                return;
-            }
-            
-            // Get all form values
-            const clientName = document.getElementById('quickClientName').value.trim();
-            const clientPhone = document.getElementById('quickClientPhone').value.trim();
-            const clientEmail = document.getElementById('quickClientEmail').value.trim();
-            const emergencyPhone = document.getElementById('quickEmergencyPhone').value.trim();
-            
-            // Create client object with all animals
-            const clientId = 'client_' + Date.now();
-            
-            // Extract last name from client name
-            const nameParts = clientName.trim().split(' ');
-            const lastName = nameParts.length > 1 ? nameParts[nameParts.length - 1] : nameParts[0];
-            
-            const dogs = animalsList.map(animal => ({
-                id: 'dog_' + Date.now() + '_' + Math.random(),
-                name: animal.name,
-                lastName: lastName, // Add owner's last name
-                animalType: animal.animalType,
-                breed: animal.breed,
-                age: animal.age,
-                weight: animal.weight,
-                foodRequirements: animal.foodRequirements,
-                notes: animal.notes,
-                gender: '',
-                color: '',
-                vaccinations: '',
-                medications: [],
-                documents: []
-            }));
-            
-            const client = {
-                id: clientId,
-                familyName: lastName,
-                contactName: clientName,
-                phone: clientPhone,
-                email: clientEmail,
-                emergencyPhone: emergencyPhone,
-                dogs: dogs,
-                notes: ''
-            };
-            
-            // Save client
-            const clients = getClients();
-            clients.push(client);
-            localStorage.setItem('clients', JSON.stringify(clients));
-            
-            // Reset form tracking
-            resetFormTracking('quickAddAnimalForm');
-            
-            // Close modal
-            closeQuickAddAnimalModal();
-            
-            // Show success message
-            const animalNames = animalsList.map(a => a.name).join(', ');
-            const createAppointment = confirm(`✓ ${animalsList.length} animal${animalsList.length !== 1 ? 's' : ''} (${animalNames}) and ${clientName} added successfully!\n\nWould you like to create an appointment now?`);
-            
-            if (createAppointment && typeof openAppointmentModal === 'function') {
-                setTimeout(() => {
-                    // Open appointment modal with first animal pre-selected
-                    openAppointmentModal(null, clientId, dogs[0].id, dogs[0].name);
-                }, 300);
-            } else {
-                // Refresh clients list if on clients tab
-                if (typeof loadClients === 'function') {
-                    loadClients();
-                }
-            }
+            saveQuickAddClient();
+        });
+    }
+    const submitBtn = document.getElementById('quickAddSubmitBtn');
+    if (submitBtn) {
+        submitBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            saveQuickAddClient();
         });
     }
 });

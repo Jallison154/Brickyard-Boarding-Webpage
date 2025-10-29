@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadAppointments();
     renderTodayAppointments();
     renderCalendar();
+    setupMobileDatePopout();
 });
 
 // Setup appointment modal
@@ -24,6 +25,18 @@ function setupAppointmentModal() {
     const form = document.getElementById('appointmentForm');
     const clientSelect = document.getElementById('appointmentClient');
     const dogSelect = document.getElementById('appointmentDog');
+    const typeHidden = document.getElementById('appointmentType');
+    const typeButtons = document.querySelectorAll('.service-type-btn');
+
+    function setServiceType(val) {
+        if (typeHidden) typeHidden.value = val;
+        typeButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.type === val));
+    }
+    if (typeButtons && typeButtons.length) {
+        typeButtons.forEach(btn => btn.addEventListener('click', () => setServiceType(btn.dataset.type)));
+        // default
+        setServiceType(typeHidden && typeHidden.value ? typeHidden.value : 'boarding');
+    }
 
     // Populate clients dropdown
     function populateClients() {
@@ -58,8 +71,12 @@ function setupAppointmentModal() {
     // Open modal
     if (addBtn) {
         addBtn.addEventListener('click', () => {
-            populateClients();
-            openAppointmentModal();
+            if (typeof startAppointmentFlow === 'function') {
+                startAppointmentFlow();
+            } else {
+                populateClients();
+                openAppointmentModal();
+            }
         });
     }
 
@@ -81,13 +98,32 @@ function setupAppointmentModal() {
 }
 
 // Open appointment modal
-function openAppointmentModal(appointment = null) {
+function openAppointmentModal(appointment = null, preClientId = null, preDogId = null, preDogName = '') {
     const modal = document.getElementById('appointmentModal');
     const modalTitle = document.getElementById('appointmentModalTitle');
     const form = document.getElementById('appointmentForm');
+    const clientSelect = document.getElementById('appointmentClient');
+    const dogSelect = document.getElementById('appointmentDog');
 
     form.reset();
     
+    // Always (re)populate client select before potential preselect
+    if (clientSelect) {
+        const clients = getClients();
+        clientSelect.innerHTML = '<option value="">Select Client...</option>';
+        clients.forEach(client => {
+            const option = document.createElement('option');
+            option.value = client.id;
+            option.textContent = client.familyName;
+            clientSelect.appendChild(option);
+        });
+        clientSelect.disabled = false;
+    }
+    if (dogSelect) {
+        dogSelect.innerHTML = '<option value="">Select Dog...</option>';
+        dogSelect.disabled = false;
+    }
+
     if (appointment) {
         modalTitle.textContent = 'Edit Appointment';
         document.getElementById('appointmentId').value = appointment.id;
@@ -99,7 +135,10 @@ function openAppointmentModal(appointment = null) {
             document.getElementById('appointmentDog').value = appointment.dogId;
         }, 100);
         
-        document.getElementById('appointmentType').value = appointment.type;
+        const typeHidden = document.getElementById('appointmentType');
+        if (typeHidden) typeHidden.value = appointment.type || 'boarding';
+        const typeButtons = document.querySelectorAll('.service-type-btn');
+        typeButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.type === (appointment.type || 'boarding')));
         document.getElementById('appointmentStatus').value = appointment.status;
         document.getElementById('appointmentStartDate').value = appointment.startDate;
         document.getElementById('appointmentStartTime').value = appointment.startTime || '';
@@ -113,6 +152,50 @@ function openAppointmentModal(appointment = null) {
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('appointmentStartDate').value = today;
         document.getElementById('appointmentEndDate').value = today;
+        // Default type
+        const typeHidden = document.getElementById('appointmentType');
+        if (typeHidden) typeHidden.value = typeHidden.value || 'boarding';
+        const typeButtons = document.querySelectorAll('.service-type-btn');
+        typeButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.type === (typeHidden.value || 'boarding')));
+
+        // Apply pre-selections from prior steps (client/animal chosen)
+        if (preClientId) {
+            clientSelect.value = preClientId;
+            clientSelect.dispatchEvent(new Event('change'));
+            setTimeout(() => {
+                const client = getClientById(preClientId);
+                // Replace selects with title style for cleaner look
+                const clientGrp = clientSelect.closest('.form-group');
+                if (clientGrp) {
+                    clientSelect.style.display = 'none';
+                    let t = clientGrp.querySelector('.selected-title');
+                    if (!t) {
+                        t = document.createElement('div');
+                        t.className = 'selected-title';
+                        clientGrp.appendChild(t);
+                    }
+                    t.textContent = client ? (client.familyName || client.contactName || 'Selected Client') : 'Selected Client';
+                }
+                if (preDogId) {
+                    dogSelect.value = preDogId;
+                    const dogGrp = dogSelect.closest('.form-group');
+                    if (dogGrp) {
+                        dogSelect.style.display = 'none';
+                        let td = dogGrp.querySelector('.selected-title');
+                        if (!td) {
+                            td = document.createElement('div');
+                            td.className = 'selected-title';
+                            dogGrp.appendChild(td);
+                        }
+                        const dog = client && client.dogs ? client.dogs.find(d=>d.id===preDogId) : null;
+                        td.textContent = dog ? (dog.name || 'Selected Animal') : 'Selected Animal';
+                    }
+                }
+                // Lock selects to prevent changes (also hidden)
+                clientSelect.disabled = true;
+                dogSelect.disabled = !!preDogId;
+            }, 100);
+        }
     }
 
     // Initialize form tracking when modal opens
@@ -139,7 +222,66 @@ async function closeAppointmentModal() {
     const modal = document.getElementById('appointmentModal');
     modal.classList.remove('active');
     document.getElementById('appointmentForm').reset();
+    // Unlock selects for next open
+    const clientSelect = document.getElementById('appointmentClient');
+    const dogSelect = document.getElementById('appointmentDog');
+    if (clientSelect) {
+        clientSelect.disabled = false;
+        clientSelect.style.display = '';
+        const t = clientSelect.closest('.form-group')?.querySelector('.selected-title');
+        if (t) t.remove();
+    }
+    if (dogSelect) {
+        dogSelect.disabled = false;
+        dogSelect.style.display = '';
+        const td = dogSelect.closest('.form-group')?.querySelector('.selected-title');
+        if (td) td.remove();
+    }
 }
+
+// Mobile date popout for small screens
+let activeDateField = null; // 'start' | 'end'
+function setupMobileDatePopout() {
+    const startInput = document.getElementById('appointmentStartDate');
+    const endInput = document.getElementById('appointmentEndDate');
+    if (!startInput || !endInput) return;
+
+    const openPop = (field) => {
+        if (window.innerWidth > 768) return; // desktop: keep default
+        activeDateField = field;
+        const modal = document.getElementById('appointmentDateModal');
+        const s = document.getElementById('mobileStartDate');
+        const e = document.getElementById('mobileEndDate');
+        s.value = document.getElementById('appointmentStartDate').value;
+        e.value = document.getElementById('appointmentEndDate').value;
+        modal.classList.add('active');
+    };
+
+    startInput.addEventListener('focus', () => openPop('start'));
+    startInput.addEventListener('click', () => openPop('start'));
+    endInput.addEventListener('focus', () => openPop('end'));
+    endInput.addEventListener('click', () => openPop('end'));
+}
+
+function closeAppointmentDateModal() {
+    const modal = document.getElementById('appointmentDateModal');
+    if (modal) modal.classList.remove('active');
+    activeDateField = null;
+}
+
+function saveAppointmentDatesFromPopout() {
+    const s = document.getElementById('mobileStartDate').value;
+    const e = document.getElementById('mobileEndDate').value;
+    if (activeDateField === 'start' || activeDateField === 'end') {
+        // If only one was intended, still copy both to keep consistent
+        if (s) document.getElementById('appointmentStartDate').value = s;
+        if (e) document.getElementById('appointmentEndDate').value = e;
+    }
+    closeAppointmentDateModal();
+}
+
+window.closeAppointmentDateModal = closeAppointmentDateModal;
+window.saveAppointmentDatesFromPopout = saveAppointmentDatesFromPopout;
 
 // Save appointment
 function saveAppointment() {

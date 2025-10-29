@@ -165,21 +165,24 @@ function setupEventListeners() {
     const addAppointmentButtons = [
         'addAppointmentBtnSubmissions', 
         'addAppointmentBtnCurrent',
-        'addAppointmentBtnToday'
+        'addAppointmentBtnToday',
+        'addAppointmentBtn'
     ];
     
     // Note: addAppointmentBtn is handled by scheduling.js on the schedule tab
     // These buttons are on other tabs and need to switch to schedule tab first
     addAppointmentButtons.forEach(btnId => {
-        const btn = document.getElementById(btnId);
-        if (btn) {
+        const nodes = document.querySelectorAll(`#${btnId}`);
+        nodes.forEach(btn => {
             btn.addEventListener('click', () => {
-                const scheduleTab = document.querySelector('.tab-btn[data-tab="schedule"]');
-                if (scheduleTab) {
-                    scheduleTab.click();
+                if (typeof startAppointmentFlow === 'function') {
+                    startAppointmentFlow();
+                } else {
+                    const scheduleTab = document.querySelector('.tab-btn[data-tab="schedule"]');
+                    if (scheduleTab) scheduleTab.click();
                 }
             });
-        }
+        });
     });
 
     // View mode buttons
@@ -811,8 +814,12 @@ function viewClientDetails(clientId) {
     
     const dogCount = client.dogs ? client.dogs.length : 0;
     
+    const hasAnimals = client.dogs && client.dogs.length > 0;
     content.innerHTML = `
         <div class="client-details-view">
+            <div class="details-toolbar" style="display:flex; gap:0.5rem; justify-content:flex-end; margin-bottom:0.75rem;">
+                ${hasAnimals ? `<button class="btn btn-primary" onclick="startAppointmentFlow('${client.id}')">Add Appointment</button>` : ''}
+            </div>
             <div class="details-section">
                 <div class="section-header-with-edit">
                     <h3>Contact Information</h3>
@@ -1114,3 +1121,113 @@ window.switchViewMode = switchViewMode;
 window.clearSearch = clearSearch;
 window.loadClients = loadClients;
 window.setupTabs = setupTabs;
+
+// Multi-step appointment flow using existing quickAccessModal
+function startAppointmentFlow(initialClientId = null) {
+    const modal = document.getElementById('quickAccessModal');
+    const titleEl = document.getElementById('quickAccessTitle');
+    const contentEl = document.getElementById('quickAccessContent');
+    if (!modal || !titleEl || !contentEl) {
+        // fallback: open classic modal
+        if (initialClientId) {
+            const c = getClientById(initialClientId);
+            if (c && c.dogs && c.dogs[0] && typeof openAppointmentModal === 'function') {
+                openAppointmentModal(null, c.id, c.dogs[0].id, c.dogs[0].name);
+            }
+        }
+        return;
+    }
+
+    function renderClientSelect() {
+        titleEl.textContent = 'Select Client';
+        const sortItems = (items) => [...items].sort((a,b) => {
+            const an = (a.contactName || a.familyName || '').toLowerCase();
+            const bn = (b.contactName || b.familyName || '').toLowerCase();
+            return an.localeCompare(bn);
+        });
+        const buildRows = (items) => sortItems(items).map(c => {
+            const animals = (c.dogs || []).map(d => `${(d.animalType||'Dog')==='Cat'?'🐱':'🐕'} ${escapeHtml(d.name||'Unnamed')}`).join(', ');
+            return `
+                <tr class="select-row" data-client-id="${c.id}" style="cursor:pointer;">
+                    <td style="padding:0.5rem 0.75rem;">${escapeHtml(c.contactName || c.familyName || 'Unnamed')}</td>
+                    <td style="padding:0.5rem 0.75rem;">${escapeHtml(c.phone || '')}</td>
+                    <td style="padding:0.5rem 0.75rem; color:#555;">${escapeHtml(animals || '—')}</td>
+                </tr>
+            `;
+        }).join('');
+        const buildTable = (items) => `
+            <table style="width:100%; border-collapse:collapse;">
+                <thead>
+                    <tr style="text-align:left; border-bottom:1px solid #ddd;">
+                        <th style="padding:0.5rem 0.75rem;">Client</th>
+                        <th style="padding:0.5rem 0.75rem;">Phone</th>
+                        <th style="padding:0.5rem 0.75rem;">Animals</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${buildRows(items)}
+                </tbody>
+            </table>
+        `;
+        contentEl.innerHTML = `
+            <div style="margin-bottom:0.5rem;">
+                <input id="apptClientSearch" type="text" placeholder="Search clients by name or phone..." style="width:100%; padding:0.6rem; border-radius:8px; border:1px solid #ccc;" />
+            </div>
+            <div id="apptClientList" style="max-height:60vh; overflow:auto;">${clients.length ? buildTable(sortItems(clients)) : '<p>No clients available.</p>'}</div>
+        `;
+        const listEl = document.getElementById('apptClientList');
+        const attachClicks = () => listEl.querySelectorAll('tr.select-row').forEach(row => {
+            row.addEventListener('click', () => renderDogSelect(row.getAttribute('data-client-id')));
+        });
+        attachClicks();
+        const input = document.getElementById('apptClientSearch');
+        if (input) {
+            input.addEventListener('input', (e) => {
+                const q = e.target.value.toLowerCase();
+                const filtered = clients.filter(c => {
+                    const n = (c.contactName || c.familyName || '').toLowerCase();
+                    const p = (c.phone || '').toLowerCase();
+                    return n.includes(q) || p.includes(q);
+                });
+                listEl.innerHTML = filtered.length ? buildTable(sortItems(filtered)) : '<p>No results</p>';
+                attachClicks();
+            });
+            setTimeout(() => input.focus(), 50);
+        }
+        modal.classList.add('active');
+    }
+
+    function renderDogSelect(clientId) {
+        const c = getClientById(clientId);
+        if (!c) return;
+        if (!c.dogs || c.dogs.length === 0) {
+            alert('This client has no animals yet.');
+            return;
+        }
+        titleEl.textContent = 'Select Animal';
+        const list = c.dogs.map(d => `
+            <button class="btn" data-dog-id="${d.id}" style="width:100%; text-align:left; margin:0.25rem 0;">
+                ${(d.animalType || 'Dog') === 'Cat' ? '🐱' : '🐕'} ${escapeHtml(d.name || 'Unnamed')}
+            </button>
+        `).join('');
+        contentEl.innerHTML = `<div style="max-height:60vh; overflow:auto;">${list}</div>`;
+        contentEl.querySelectorAll('button[data-dog-id]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                closeQuickAccessModal();
+                setTimeout(() => {
+                    if (typeof openAppointmentModal === 'function') {
+                        openAppointmentModal(null, c.id, btn.getAttribute('data-dog-id'), (c.dogs.find(x=>x.id===btn.getAttribute('data-dog-id'))||{}).name || '');
+                    }
+                }, 150);
+            });
+        });
+        modal.classList.add('active');
+    }
+
+    if (initialClientId) {
+        renderDogSelect(initialClientId);
+    } else {
+        renderClientSelect();
+    }
+}
+window.startAppointmentFlow = startAppointmentFlow;
