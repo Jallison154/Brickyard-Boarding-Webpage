@@ -11,13 +11,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     </head>
 <body>
-    <!-- Top Header Text -->
-    <div class="top-header">
-        <div class="container">
-            <p class="top-header-text">Brickyard Boarding Kennel - Caring for your pets since 1995</p>
-        </div>
-    </div>
-    
     <!-- Navigation -->
     <nav class="navbar" id="navbar">
         <div class="container nav-container">
@@ -35,23 +28,20 @@
             </button>
             <ul class="nav-menu" id="navMenu">
                 <li><a href="#home" class="nav-link">Home</a></li>
-                <li><a href="#about" class="nav-link">About</a></li>
-                <li><a href="#boarding" class="nav-link">Boarding</a></li>
+                <li><a href="#boarding" class="nav-link">Boarding Information</a></li>
                 <li><a href="#grooming" class="nav-link">Grooming</a></li>
+                <li><a href="#contact" class="nav-link">Hours/Contact Us</a></li>
                 <li><a href="#gallery" class="nav-link">Gallery</a></li>
-                <li><a href="#contact" class="nav-link">Contact</a></li>
-                <li>
-                    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
-                        <svg class="theme-icon sun" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2"/>
-                            <path d="M12 1v3M12 20v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M1 12h3M20 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12" stroke="currentColor" stroke-width="2"/>
-                        </svg>
-                        <svg class="theme-icon moon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2"/>
-                        </svg>
-                    </button>
-                </li>
             </ul>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                <svg class="theme-icon sun" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="2"/>
+                    <path d="M12 1v3M12 20v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M1 12h3M20 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                <svg class="theme-icon moon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" stroke="currentColor" stroke-width="2"/>
+                </svg>
+            </button>
         </div>
     </nav>
 
@@ -59,12 +49,18 @@
     <section id="home" class="hero">
         <div class="hero-overlay"></div>
         <div class="container hero-content">
-            <h1 class="hero-title">Welcome to Brickyard Boarding Kennel</h1>
-            <p class="hero-subtitle">Caring for your furry friends since 1995</p>
-            <p class="hero-location">Located in Billings, MT (Lockwood)</p>
+            <h1 class="hero-title">WELCOME!</h1>
+            <h2 class="hero-subtitle">to Brickyard Boarding Kennel</h2>
+            <p class="hero-description">Brickyard was started in 1995. We are located in Billings MT. (Lockwood)</p>
+            <div class="hero-notice">
+                <p><strong>OPEN BY APPOINTMENT ONLY</strong> - check hours</p>
+                <p><strong>Please call first</strong></p>
+                <p>Thank You</p>
+            </div>
             <div class="hero-buttons">
-                <a href="#boarding" class="btn btn-primary">View Services</a>
-                <a href="#contact" class="btn btn-secondary">Contact Us</a>
+                <a href="#boarding" class="btn btn-primary">Boarding Information</a>
+                <a href="#grooming" class="btn btn-secondary">Grooming Services</a>
+                <a href="#contact" class="btn btn-outline">Hours/Contact Us</a>
             </div>
         </div>
         <div class="scroll-indicator">
@@ -81,24 +77,30 @@
             </div>
             <div class="about-content">
                 <div class="about-text">
-                    <p class="lead">Brickyard Boarding Kennel was founded in 1995, and since then, we've made many friends while caring for countless beloved pets.</p>
-                    <p>Dogs have been a part of my life for as long as I can remember. In grade school, I played "kennel" with our family poodle and mixed breed rather than dolls. My passion for dogs led me to follow in my older sister's footsteps when she started showing dogs at AKC shows in 1975.</p>
-                    <p>My first show dog was a Siberian Husky that became a Champion in 1980 and produced Champion offspring. With over 30 years of experience in dog care, showing, and breeding, you can trust that your pet will receive the highest level of care and attention.</p>
+                    <p class="lead">Brickyard Boarding Kennel was founded in 1995 - we have made many friends. I get to take care of many different breeds.</p>
+                    <p>Dogs have been a part of my life for a very long time. In grade school I played "kennel" with the family poodle and mixed breed rather than Barbies. In 1975 my older sister started showing dogs at the AKC shows so I followed suite.</p>
+                    <p>My first show dog was a Siberian Husky that became a Champion in 1980 and produced Ch. offspring.</p>
+                    <p>With decades of experience in dog care, showing, and breeding, you can trust that your pet will receive the highest level of care and attention at Brickyard Boarding Kennel.</p>
                 </div>
                 <div class="about-image">
                     <div class="image-wrapper">
-                        <img src="resources/images/11062b_dadf974a47664e5cb42f939b7f17bec8f000.jpg" alt="Brickyard Boarding Kennel">
+                        <div class="image-container">
+                            <img src="resources/images/about_kennel.jpg" alt="Brickyard Boarding Kennel">
+                            <div class="image-overlay">
+                                <span>Since 1995</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Services Section -->
+    <!-- Boarding Information Section -->
     <section id="boarding" class="services section">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Our Services</h2>
+                <h2 class="section-title">Boarding Information</h2>
                 <p class="section-subtitle">Professional care for your pet</p>
             </div>
             <div class="services-grid">
@@ -120,22 +122,91 @@
                     </ul>
                     <a href="#contact" class="service-link">Schedule Your Stay →</a>
                 </div>
-                <div class="service-card">
-                    <div class="service-icon">
-                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z" stroke="currentColor" stroke-width="2"/>
-                            <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                        </svg>
-                    </div>
-                    <h3>Grooming Services</h3>
-                    <p>Professional grooming to keep your pet looking and feeling their best. From baths to full groom packages.</p>
-                    <ul class="service-features">
-                        <li>Bath & brush</li>
-                        <li>Haircuts & trims</li>
-                        <li>Nail trimming</li>
-                        <li>Ear cleaning</li>
+            </div>
+            
+            <!-- Boarding Agreement Section -->
+            <div class="boarding-agreement">
+                <h3>Boarding Agreement</h3>
+                <div class="agreement-content">
+                    <p>Before bringing your pet to Brickyard Boarding Kennel, please review our boarding agreement:</p>
+                    <ul class="agreement-list">
+                        <li>All pets must be current on vaccinations (Rabies, DHPP, Bordetella)</li>
+                        <li>Proof of vaccination must be provided at check-in</li>
+                        <li>Pets must be in good health and free from contagious conditions</li>
+                        <li>Any special dietary needs or medications must be discussed in advance</li>
+                        <li>Emergency contact information must be provided and kept current</li>
+                        <li>Payment is due at time of service</li>
+                        <li>We reserve the right to refuse service to any pet</li>
                     </ul>
-                    <a href="#contact" class="service-link">Book Grooming →</a>
+                    <p class="agreement-note"><strong>Note:</strong> Please call ahead to schedule your pet's stay and discuss any special requirements.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Grooming Section -->
+    <section id="grooming" class="grooming section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Grooming Services</h2>
+                <p class="section-subtitle">Professional grooming for your pet</p>
+            </div>
+            <div class="grooming-content">
+                <div class="grooming-text">
+                    <p class="lead">Our professional grooming services help keep your pet looking and feeling their best. With decades of experience caring for dogs, we offer a full range of grooming services tailored to your pet's specific needs and breed requirements.</p>
+                    
+                    <div class="grooming-features">
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                            <h4>Bath & Brush</h4>
+                            <p>Complete bathing with premium shampoos and thorough brushing to keep your pet's coat healthy and shiny</p>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <h4>Haircuts & Trims</h4>
+                            <p>Professional styling and trimming for all coat types, from simple trims to breed-specific cuts</p>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                                    <path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                            </div>
+                            <h4>Nail Trimming</h4>
+                            <p>Safe and gentle nail care for your pet's comfort and health</p>
+                        </div>
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                            </div>
+                            <h4>Ear Cleaning</h4>
+                            <p>Thorough ear cleaning to prevent infections and maintain ear health</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grooming-notes">
+                        <div class="note-box">
+                            <h4>Appointment Required</h4>
+                            <p>Please call ahead to schedule your pet's grooming appointment. We recommend booking in advance, especially during busy seasons.</p>
+                        </div>
+                        <div class="note-box">
+                            <h4>Health Requirements</h4>
+                            <p>All pets must be current on vaccinations and in good health. Please bring vaccination records to your appointment.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -150,39 +221,51 @@
             </div>
             <div class="gallery-grid">
                 <div class="gallery-item">
-                    <img src="resources/images/11062b_dadf974a47664e5cb42f939b7f17bec8f000.jpg" alt="Brickyard Boarding Kennel Facility" loading="lazy">
-                    <div class="gallery-overlay">
-                        <span>Kennel Facility</span>
+                    <div class="image-container">
+                        <img src="resources/images/kennel_facility.jpg" alt="Brickyard Boarding Kennel Facility" loading="lazy">
+                        <div class="gallery-overlay">
+                            <span>Kennel Facility</span>
+                        </div>
                     </div>
                 </div>
                 <div class="gallery-item">
-                    <img src="resources/images/324c97_0bc46d64094a443093f1e53670d70868.jpg" alt="Dogs at Brickyard Boarding" loading="lazy">
-                    <div class="gallery-overlay">
-                        <span>Happy Dogs</span>
+                    <div class="image-container">
+                        <img src="resources/images/happy_dogs.jpg" alt="Dogs at Brickyard Boarding" loading="lazy">
+                        <div class="gallery-overlay">
+                            <span>Happy Dogs</span>
+                        </div>
                     </div>
                 </div>
                 <div class="gallery-item">
-                    <img src="resources/images/84770f_6bbe4230fd71efea7703ecffee091215.png" alt="Boarding Area" loading="lazy">
-                    <div class="gallery-overlay">
-                        <span>Boarding Area</span>
+                    <div class="image-container">
+                        <img src="resources/images/boarding_area.jpg" alt="Boarding Area" loading="lazy">
+                        <div class="gallery-overlay">
+                            <span>Boarding Area</span>
+                        </div>
                     </div>
                 </div>
                 <div class="gallery-item">
-                    <img src="resources/images/84770f_9c23f56a09a7f06d4dbf80ed6fdcd2e4.png" alt="Grooming Services" loading="lazy">
-                    <div class="gallery-overlay">
-                        <span>Grooming</span>
+                    <div class="image-container">
+                        <img src="resources/images/grooming_services.jpg" alt="Grooming Services" loading="lazy">
+                        <div class="gallery-overlay">
+                            <span>Grooming</span>
+                        </div>
                     </div>
                 </div>
                 <div class="gallery-item">
-                    <img src="resources/images/ebe802092ece275cd97057ab7a294d1e.png" alt="Play Area" loading="lazy">
-                    <div class="gallery-overlay">
-                        <span>Play Area</span>
+                    <div class="image-container">
+                        <img src="resources/images/play_area.jpg" alt="Play Area" loading="lazy">
+                        <div class="gallery-overlay">
+                            <span>Play Area</span>
+                        </div>
                     </div>
                 </div>
                 <div class="gallery-item">
-                    <img src="resources/images/11062b_dadf974a47664e5cb42f939b7f17bec8f000.jpg" alt="Brickyard Boarding Kennel" loading="lazy">
-                    <div class="gallery-overlay">
-                        <span>Our Facility</span>
+                    <div class="image-container">
+                        <img src="resources/images/kennel_facility2.jpg" alt="Brickyard Boarding Kennel" loading="lazy">
+                        <div class="gallery-overlay">
+                            <span>Our Facility</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -321,6 +404,9 @@
                 <p>&copy; 1995-2025 Brickyard Boarding Kennel. All rights reserved.</p>
                 <p style="margin-top: 0.5rem; opacity: 0.5; font-size: 0.8rem;">
                     <a href="admin.html" style="color: rgba(255, 255, 255, 0.7); text-decoration: none;">Admin</a>
+                </p>
+                <p style="margin-top: 0.5rem; opacity: 0.7; font-size: 0.8rem;">
+                    Proudly created with modern web technology
                 </p>
             </div>
         </div>

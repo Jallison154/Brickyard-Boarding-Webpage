@@ -23,18 +23,35 @@ function updateTodayStats() {
         const appointments = getAppointments();
         const today = new Date().toISOString().split('T')[0];
         
+        console.log('🔍 updateTodayStats - Total appointments:', appointments.length);
+        console.log('📅 Today date:', today);
+        
         // Count checked-in animals
         const checkedInCount = appointments.filter(apt => {
             const isCheckedIn = apt.checkedIn === true || apt.checkedIn === 'true';
             const isCheckedOut = apt.checkedOut === true || apt.checkedOut === 'true';
-            return isCheckedIn && !isCheckedOut;
+            const result = isCheckedIn && !isCheckedOut;
+            if (result) {
+                console.log('✅ Checked in animal:', apt.dogName, 'checkedIn:', apt.checkedIn, 'checkedOut:', apt.checkedOut);
+            }
+            return result;
         }).length;
         
         // Count today's arrivals
         const arrivalsCount = appointments.filter(apt => {
+            const isCheckedIn = apt.checkedIn === true || apt.checkedIn === 'true';
+            const isCheckedOut = apt.checkedOut === true || apt.checkedOut === 'true';
+            if (isCheckedIn || isCheckedOut) return false;
+            if (!apt.startDate) return false;
             const startDate = new Date(apt.startDate).toISOString().split('T')[0];
-            return startDate === today && !apt.checkedIn && !apt.checkedOut;
+            const result = startDate === today;
+            if (result) {
+                console.log('📅 Today arrival:', apt.dogName, 'startDate:', apt.startDate);
+            }
+            return result;
         }).length;
+        
+        console.log('📊 Counts - Checked in:', checkedInCount, 'Arrivals:', arrivalsCount);
         
         // Update UI
         const checkedInEl = document.getElementById('checkedInCount');
@@ -429,39 +446,6 @@ function loadCurrentDogs() {
     }
 }
 
-// Update today's stats
-function updateTodayStats() {
-    const appointments = getAppointments();
-    const today = new Date().toISOString().split('T')[0];
-    
-    // Count checked-in animals (must be checked in and not checked out)
-    const checkedIn = appointments.filter(apt => {
-        if (!apt.checkedIn || apt.checkedOut) return false;
-        
-        // Include if in date range OR just checked in
-        if (apt.startDate && apt.endDate) {
-            const startDate = new Date(apt.startDate).toISOString().split('T')[0];
-            const endDate = new Date(apt.endDate).toISOString().split('T')[0];
-            return today >= startDate && today <= endDate;
-        }
-        // If no dates, include if checked in
-        return true;
-    }).length;
-    
-    // Count today's arrivals (not checked in yet)
-    const arrivals = appointments.filter(apt => {
-        if (apt.checkedIn || apt.checkedOut) return false;
-        if (!apt.startDate) return false;
-        const startDate = new Date(apt.startDate).toISOString().split('T')[0];
-        return startDate === today;
-    }).length;
-    
-    const checkedInElement = document.getElementById('checkedInCount');
-    const arrivalsElement = document.getElementById('arrivalsCount');
-    
-    if (checkedInElement) checkedInElement.textContent = checkedIn;
-    if (arrivalsElement) arrivalsElement.textContent = arrivals;
-}
 
 // Handle check-in button click (two-step confirmation)
 function handleCheckInClick(appointmentId) {
