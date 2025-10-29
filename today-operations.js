@@ -1079,8 +1079,7 @@ function viewAnimalInfo(appointmentId) {
                     </div>
                 ` : `
                     <div class="animal-photo-placeholder">
-                        <span>📷</span>
-                        <small>No photo</small>
+                        <span class="animal-icon-large">${dog.animalType === 'Cat' ? '🐱' : '🐶'}</span>
                     </div>
                 `}
                 <h2>${escapeHtml(dog.name)}</h2>

@@ -44,6 +44,7 @@ body {
     color: var(--text-dark);
     line-height: 1.6;
     overflow-x: hidden;
+    padding-top: 120px; /* Space for navbar and top header */
 }
 
 .container {
@@ -52,10 +53,34 @@ body {
     padding: 0 20px;
 }
 
+/* Top Header */
+.top-header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: var(--primary-color);
+    color: white;
+    padding: 0.5rem 0;
+    text-align: center;
+    z-index: 1001;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.top-header-text {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+}
+
+[data-theme="dark"] .top-header {
+    background: var(--primary-dark);
+}
+
 /* Navigation */
 .navbar {
     position: fixed;
-    top: 0;
+    top: 32px; /* Below top header */
     width: 100%;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
@@ -213,13 +238,14 @@ body {
 /* Hero Section */
 .hero {
     position: relative;
-    height: 100vh;
-    min-height: 600px;
+    height: calc(100vh - 120px);
+    min-height: 500px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
     overflow: hidden;
+    margin-top: -120px; /* Offset the body padding */
 }
 
 .hero::before {
@@ -1071,6 +1097,24 @@ input[type="submit"].btn-confirm:hover {
     .logo-image {
         height: 40px;
         max-width: 200px;
+    }
+
+    .top-header-text {
+        font-size: 0.75rem;
+        padding: 0.25rem 0;
+    }
+
+    body {
+        padding-top: 110px;
+    }
+
+    .navbar {
+        top: 28px;
+    }
+
+    .hero {
+        height: calc(100vh - 110px);
+        margin-top: -110px;
     }
 
     .hero-title {
