@@ -20,8 +20,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // Set authentication flag
             sessionStorage.setItem('construction_authenticated', 'true');
             
-            // Redirect to main site
-            window.location.href = 'home.html';
+            // Redirect to main site (use replace so user can't go back)
+            window.location.replace('home.html');
         } else {
             if (errorMessage) {
                 errorMessage.style.display = 'block';
