@@ -714,6 +714,35 @@
         </div>
     </div>
 
+    <!-- Time Picker Popout -->
+    <div class="modal" id="appointmentTimeModal">
+        <div class="modal-content modal-small">
+            <div class="modal-header">
+                <h2 id="appointmentTimeTitle">Select Time</h2>
+                <button class="modal-close" onclick="closeAppointmentTimeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="mobileTimeInput">Time</label>
+                    <input type="time" id="mobileTimeInput" step="900">
+                </div>
+                <div class="form-group" style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+                    <button class="btn" type="button" onclick="setQuickTime('08:00')">08:00</button>
+                    <button class="btn" type="button" onclick="setQuickTime('09:00')">09:00</button>
+                    <button class="btn" type="button" onclick="setQuickTime('10:00')">10:00</button>
+                    <button class="btn" type="button" onclick="setQuickTime('14:00')">14:00</button>
+                    <button class="btn" type="button" onclick="setQuickTime('15:00')">15:00</button>
+                    <button class="btn" type="button" onclick="setQuickTime('16:00')">16:00</button>
+                    <button class="btn" type="button" onclick="setQuickTime('17:00')">17:00</button>
+                </div>
+            </div>
+            <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:0.5rem; padding:1rem 2rem 2rem;">
+                <button class="btn btn-secondary" onclick="closeAppointmentTimeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveAppointmentTimeFromPopout()">Save</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Client Details View Modal -->
     <div class="modal" id="clientDetailsModal">
         <div class="modal-content modal-extra-large">

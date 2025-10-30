@@ -13,7 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
     loadAppointments();
     renderTodayAppointments();
     renderCalendar();
-    setupMobileDatePopout();
+    setupDatePopout();
+    setupTimePopout();
 });
 
 // Setup appointment modal
@@ -241,13 +242,12 @@ async function closeAppointmentModal() {
 
 // Mobile date popout for small screens
 let activeDateField = null; // 'start' | 'end'
-function setupMobileDatePopout() {
+function setupDatePopout() {
     const startInput = document.getElementById('appointmentStartDate');
     const endInput = document.getElementById('appointmentEndDate');
     if (!startInput || !endInput) return;
 
     const openPop = (field) => {
-        if (window.innerWidth > 768) return; // desktop: keep default
         activeDateField = field;
         const modal = document.getElementById('appointmentDateModal');
         const s = document.getElementById('mobileStartDate');
@@ -282,6 +282,50 @@ function saveAppointmentDatesFromPopout() {
 
 window.closeAppointmentDateModal = closeAppointmentDateModal;
 window.saveAppointmentDatesFromPopout = saveAppointmentDatesFromPopout;
+
+// Time popout
+let activeTimeField = null; // 'start' | 'end'
+function setupTimePopout() {
+    const start = document.getElementById('appointmentStartTime');
+    const end = document.getElementById('appointmentEndTime');
+    if (!start || !end) return;
+    const open = (field) => {
+        activeTimeField = field;
+        const modal = document.getElementById('appointmentTimeModal');
+        const input = document.getElementById('mobileTimeInput');
+        input.value = document.getElementById(field === 'start' ? 'appointmentStartTime' : 'appointmentEndTime').value || '';
+        modal.classList.add('active');
+    };
+    start.addEventListener('focus', () => open('start'));
+    start.addEventListener('click', () => open('start'));
+    end.addEventListener('focus', () => open('end'));
+    end.addEventListener('click', () => open('end'));
+}
+
+function closeAppointmentTimeModal() {
+    const modal = document.getElementById('appointmentTimeModal');
+    if (modal) modal.classList.remove('active');
+    activeTimeField = null;
+}
+
+function setQuickTime(val) {
+    const input = document.getElementById('mobileTimeInput');
+    input.value = val;
+}
+
+function saveAppointmentTimeFromPopout() {
+    const val = document.getElementById('mobileTimeInput').value;
+    if (activeTimeField === 'start') {
+        document.getElementById('appointmentStartTime').value = val;
+    } else if (activeTimeField === 'end') {
+        document.getElementById('appointmentEndTime').value = val;
+    }
+    closeAppointmentTimeModal();
+}
+
+window.closeAppointmentTimeModal = closeAppointmentTimeModal;
+window.saveAppointmentTimeFromPopout = saveAppointmentTimeFromPopout;
+window.setQuickTime = setQuickTime;
 
 // Save appointment
 function saveAppointment() {
