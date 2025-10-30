@@ -1,17 +1,6 @@
 // Construction Password Protection
-// Simple hash function for basic obfuscation
-function simpleHash(str) {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-        const char = str.charCodeAt(i);
-        hash = ((hash << 5) - hash) + char;
-        hash = hash & hash; // Convert to 32-bit integer
-    }
-    return hash;
-}
-
-// Password hash (stored as integer for security)
-const PASSWORD_HASH = -1897311967;
+// Base64 encoded password
+const ENCODED_PASSWORD = btoa('brickyard2025');
 
 document.addEventListener('DOMContentLoaded', function() {
     const passwordInput = document.getElementById('constructionPassword');
@@ -27,9 +16,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!passwordInput) return;
         
         const enteredPassword = passwordInput.value.trim();
-        const enteredHash = simpleHash(enteredPassword);
+        const encodedEntered = btoa(enteredPassword);
         
-        if (enteredHash === PASSWORD_HASH) {
+        if (encodedEntered === ENCODED_PASSWORD) {
             // Set authentication flag
             sessionStorage.setItem('construction_authenticated', 'true');
             
