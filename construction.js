@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
             sessionStorage.setItem('construction_authenticated', 'true');
             
             // Redirect to main site
-            window.location.href = 'index.html';
+            window.location.href = 'home.html';
         } else {
             if (errorMessage) {
                 errorMessage.style.display = 'block';
