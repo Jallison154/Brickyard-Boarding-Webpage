@@ -58,27 +58,20 @@ body {
     background: transparent;
 }
 
-/* Construction Overlay Styles */
-html:has(#constructionOverlay:not([style*="display: none"])) {
-    height: 100vh !important;
-    overflow: hidden !important;
+/* Construction Page Styles */
+body.construction-page {
+    height: 100vh;
+    overflow: hidden;
     margin: 0;
     padding: 0;
-    background: transparent !important;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    transform: none;
+    width: auto;
 }
 
-body:not(.unlocked) #mainContent {
-    display: none !important;
-}
-
-body:not(.unlocked) {
-    height: 100vh !important;
-    overflow: hidden !important;
-    position: fixed !important;
-    width: 100vw !important;
-    background: transparent !important;
-    transform: none !important;
-    padding-top: 0 !important;
+body.construction-page html {
+    height: 100vh;
+    overflow: hidden;
 }
 
 .construction-overlay {
@@ -87,7 +80,7 @@ body:not(.unlocked) {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%) !important;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
     z-index: 99999;
     display: flex !important;
     align-items: center !important;

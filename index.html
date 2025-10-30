@@ -13,36 +13,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     </head>
 <body>
-    <!-- Construction Overlay -->
-    <div id="constructionOverlay" class="construction-overlay">
-        <div class="construction-content">
-            <div class="construction-logo">
-                <img src="resources/images/logo.png" alt="Brickyard Boarding Kennel" class="construction-logo-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                <div class="construction-logo-text" style="display: none;">
-                    <h2>Brickyard Boarding</h2>
-                    <span class="construction-tagline">Kennel</span>
-                </div>
-            </div>
-            <div class="construction-icon">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z" stroke="currentColor" stroke-width="2"/>
-                    <path d="M12 16V12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M12 8H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-            </div>
-            <h1 class="construction-title">Website Under Construction</h1>
-            <p class="construction-subtitle">We're currently working on something amazing.<br>Check back soon!</p>
-            <div class="construction-form">
-                <p class="construction-access">Have a password? Enter it below:</p>
-                <input type="password" id="constructionPassword" class="construction-input" placeholder="Enter password..." autocomplete="off">
-                <button id="constructionSubmit" class="btn btn-primary">Enter Site</button>
-                <p id="constructionError" class="construction-error" style="display: none;">Incorrect password. Please try again.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main Content (Hidden by default) -->
-    <div id="mainContent">
     <!-- Navigation -->
     <nav class="navbar" id="navbar">
         <div class="container nav-container">
@@ -496,10 +466,15 @@
 
     <script src="theme.js"></script>
     <script src="script.js"></script>
-    </div> <!-- End mainContent -->
     
-    <!-- Construction Script -->
-    <script src="construction.js"></script>
+    <!-- Check authentication and redirect if needed -->
+    <script>
+        // Check if user is authenticated
+        const isAuthenticated = sessionStorage.getItem('construction_authenticated');
+        if (isAuthenticated !== 'true') {
+            window.location.href = 'construction.html';
+        }
+    </script>
 </body>
 </html>
 
