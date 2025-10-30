@@ -1,14 +1,22 @@
 // Construction Password Protection
-const CONSTRUCTION_PASSWORD = 'brickyard2025';
+// Simple hash function for basic obfuscation
+function simpleHash(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        const char = str.charCodeAt(i);
+        hash = ((hash << 5) - hash) + char;
+        hash = hash & hash; // Convert to 32-bit integer
+    }
+    return hash;
+}
+
+// Password hash (stored as integer for security)
+const PASSWORD_HASH = -1897311967;
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Construction page loaded');
-    
     const passwordInput = document.getElementById('constructionPassword');
     const submitButton = document.getElementById('constructionSubmit');
     const errorMessage = document.getElementById('constructionError');
-    
-    console.log('Elements found:', { passwordInput, submitButton, errorMessage });
     
     // Auto-focus on password input
     if (passwordInput) {
@@ -16,24 +24,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     function handleSubmit() {
-        if (!passwordInput) {
-            console.error('Password input not found');
-            return;
-        }
+        if (!passwordInput) return;
         
         const enteredPassword = passwordInput.value.trim();
-        console.log('Entered password:', enteredPassword);
-        console.log('Expected password:', CONSTRUCTION_PASSWORD);
+        const enteredHash = simpleHash(enteredPassword);
         
-        if (enteredPassword === CONSTRUCTION_PASSWORD) {
-            console.log('Password correct, redirecting...');
+        if (enteredHash === PASSWORD_HASH) {
             // Set authentication flag
             sessionStorage.setItem('construction_authenticated', 'true');
             
             // Redirect to main site (use replace so user can't go back)
             window.location.replace('home.html');
         } else {
-            console.log('Password incorrect');
             if (errorMessage) {
                 errorMessage.style.display = 'block';
             }
@@ -50,9 +52,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (submitButton) {
         submitButton.addEventListener('click', handleSubmit);
-        console.log('Submit button event listener added');
-    } else {
-        console.error('Submit button not found');
     }
     
     if (passwordInput) {
@@ -61,7 +60,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 handleSubmit();
             }
         });
-        console.log('Enter key listener added');
     }
     
     // Add shake animation
