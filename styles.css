@@ -90,7 +90,6 @@ body:not(.unlocked) {
     background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%) !important;
     z-index: 99999;
     display: flex !important;
-    flex-direction: column;
     align-items: center !important;
     justify-content: center !important;
     overflow: hidden;
@@ -106,13 +105,12 @@ body:not(.unlocked) {
     border-radius: 20px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     text-align: center;
-    max-width: 500px;
     width: 90%;
     max-width: min(500px, 90vw);
-    margin: 0 auto;
     animation: fadeInUp 0.5s ease-out;
     border: 1px solid rgba(255, 255, 255, 0.3);
     box-sizing: border-box;
+    flex-shrink: 0;
 }
 
 [data-theme="dark"] .construction-content {
@@ -320,8 +318,7 @@ body:not(.unlocked) {
 @media (max-width: 768px) {
     .construction-content {
         padding: 1.5rem;
-        width: 85%;
-        margin: 0 auto;
+        width: 90%;
     }
     
     .construction-logo-image {
