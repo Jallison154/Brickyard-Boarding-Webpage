@@ -1,5 +1,18 @@
 // Care Management Functions - Check-in, Care Logs, Alerts
 
+// Get animal placeholder photo (for when no photo is uploaded)
+function getAnimalPlaceholderPhoto(animalType, size = 'medium') {
+    const type = animalType || 'Dog';
+    const iconFile = type === 'Cat' ? 'cat-icon.png' : 'dog-icon.png';
+    const sizes = {
+        small: '50px',
+        medium: '150px',
+        large: '200px'
+    };
+    const photoSize = sizes[size] || sizes.medium;
+    return `<img src="resources/images/${iconFile}" alt="${type} placeholder" style="width: 100%; height: 100%; object-fit: contain;">`;
+}
+
 // Check-in/Check-out Functions
 function openCheckinModal(appointmentId, action = 'in') {
     const appointment = getAppointmentById(appointmentId);
@@ -283,7 +296,7 @@ function showQuickAccess(type) {
                                 <img src="${info.photo.data}" alt="${escapeHtml(info.dog)}" class="vet-photo-img">
                             ` : `
                                 <div class="vet-photo-placeholder ${info.animalType.toLowerCase()}">
-                                    ${info.animalEmoji}
+                                    ${getAnimalPlaceholderPhoto(info.animalType, 'medium')}
                                 </div>
                             `}
                         </div>
@@ -582,7 +595,7 @@ function checkVaccinationAlerts() {
                                 <img src="${firstPhoto.data}" alt="${escapeHtml(apt.dogName)}" class="vet-photo-img">
                             ` : `
                                 <div class="vet-photo-placeholder ${animalType.toLowerCase()}">
-                                    ${animalEmoji}
+                                    ${getAnimalPlaceholderPhoto(animalType, 'medium')}
                                 </div>
                             `}
                         </div>
@@ -654,7 +667,7 @@ function checkVaccinationAlerts() {
                                 <img src="${firstPhoto.data}" alt="${escapeHtml(apt.dogName)}" class="vet-photo-img">
                             ` : `
                                 <div class="vet-photo-placeholder ${animalType.toLowerCase()}">
-                                    ${animalEmoji}
+                                    ${getAnimalPlaceholderPhoto(animalType, 'medium')}
                                 </div>
                             `}
                         </div>

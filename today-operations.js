@@ -39,6 +39,19 @@ function getAnimalIconLarge(animalType) {
     return `<img src="resources/images/${iconFile}" alt="${type}" class="animal-icon-large" style="width: 3em; height: 3em; display: block; margin: 0 auto;">`;
 }
 
+// Get animal placeholder photo (for when no photo is uploaded)
+function getAnimalPlaceholderPhoto(animalType, size = 'medium') {
+    const type = animalType || 'Dog';
+    const iconFile = type === 'Cat' ? 'cat-icon.png' : 'dog-icon.png';
+    const sizes = {
+        small: '50px',
+        medium: '150px',
+        large: '200px'
+    };
+    const photoSize = sizes[size] || sizes.medium;
+    return `<img src="resources/images/${iconFile}" alt="${type} placeholder" style="width: 100%; height: 100%; object-fit: contain;">`;
+}
+
 // Update today's stats
 function updateTodayStats() {
     try {
@@ -152,7 +165,7 @@ function loadArrivals() {
                         </div>
                     ` : `
                         <div class="arrival-photo-placeholder ${animalType.toLowerCase()}">
-                            <span class="animal-icon-large">${animalEmoji}</span>
+                            ${getAnimalPlaceholderPhoto(animalType, 'small')}
                         </div>
                     `}
                 </div>
@@ -220,7 +233,7 @@ function loadDepartures() {
                             </div>
                         ` : `
                             <div class="departure-photo-placeholder ${animalType.toLowerCase()}">
-                                <span class="animal-icon-large">${animalEmoji}</span>
+                                ${getAnimalPlaceholderPhoto(animalType, 'small')}
                             </div>
                         `}
                     </div>
@@ -374,7 +387,7 @@ function loadCurrentDogs() {
                             <img src="${firstPhoto.data}" alt="${escapeHtml(apt.dogName)}">
                         </div>
                     ` : `
-                        <div class="dog-photo-placeholder-small">${animalEmoji}</div>
+                        <div class="dog-photo-placeholder-small">${getAnimalPlaceholderPhoto(animalType, 'small')}</div>
                     `}
                     <div class="dog-name-section">
                         <h3>${animalIcon} ${escapeHtml(apt.dogName || dog?.name || 'Unknown')}${dog?.lastName ? ' ' + escapeHtml(dog.lastName) : ''}</h3>
@@ -803,7 +816,7 @@ function loadCurrentAnimalsDetailed() {
                         <img src="${firstPhoto.data}" alt="${escapeHtml(apt.dogName)}">
                     ` : `
                         <div class="current-animal-photo-placeholder ${animalType.toLowerCase()}">
-                            ${animalType === 'Dog' ? `<img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJkb2dGcmFkaSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNERUI1ODciLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNGNUQzODIiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48Y2lyY2xlIGN4PSI3NSIgY3k9Ijc1IiByPSI2NSIgZmlsbD0idXJsKCNkb2dGcmFkaSkiLz48cGF0aCBkPSJNNDUgNTBMMzUgNzVMNTUgNzVaIiBmaWxsPSIjOEI3MzU1Ii8+PHBhdGggZD0iTTEwNSA1MEwxMTUgNzVMOTUgNzVaIiBmaWxsPSIjOEI3MzU1Ii8+PGNpcmNsZSBjeD0iNjUiIGN5PSI3MCIgcj0iNCIgZmlsbD0iIzAwMCIvPjxjaXJjbGUgY3g9Ijg1IiBjeT0iNzAiIHI9IjQiIGZpbGw9IiMwMDAiLz48cGF0aCBkPSJNNzAgODVDNzAgODUgNzMgOTAgNzUgOTBDNzcgOTAgODAgODUgODAgODUiIHN0cm9rZT0iIzAwMCIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTYyIDEwMEg4OEwxMDAgMTIwSDUwWiIgZmlsbD0iI0YwMzU4NiIvPjxwYXRoIGQ9Ik02MiAxMDBINDAiIHN0cm9rZT0iI0YwMzU4NiIgc3Ryb2tlLXdpZHRoPSIzIi8+PC9zdmc+" alt="Dog" />` : animalType === 'Cat' ? `<img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJjYXRGcmFkaSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNGRkQ3MDA7c3RvcC1vcGFjaXR5OjEiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiNGRkE1ODA7c3RvcC1vcGFjaXR5OjEiLz48L2xpbmVhckdyYWRpZW50PjwvZGVmcz48Y2lyY2xlIGN4PSI3NSIgY3k9Ijc1IiByPSI3MCIgZmlsbD0iIzY0MzI5NiIvLz48cmVjdCB4PSI0MCIgeT0iNDUiIHdpZHRoPSI3MCIgaGVpZ2h0PSI1NSIgcng9IjE1IiBmaWxsPSJ1cmwoI2NhdEZyYWRpKSIvPjxwYXRoIGQ9Ik01MCA1NUw0MCAyMEw2MCAyMFoiIGZpbGw9InVybCgjY2F0RnJhZGkpIi8+PHBhdGggZD0iTTEwMCA1NUwxMTAgMjBMOTAgMjBaIiBmaWxsPSJ1cmwoI2NhdEZyYWRpKSIvPjxjaXJjbGUgY3g9IjY1IiBjeT0iNzAiIHI9IjUiIGZpbGw9IiMwMDAiLz48Y2lyY2xlIGN4PSI4NSIgY3k9IjcwIiByPSI1IiBmaWxsPSIjMDAwIi8+PHBhdGggZD0iTTc1IDgwTDcwIDc1TDgwIDc1WiIgZmlsbD0iI0ZGOTdBQyIvPjxwYXRoIGQ9Ik03MCA4NUM3MCA4NSA3NSA5NSA3NSA5NSIgc3Ryb2tlPSIjRkY5N0FDIiBzdHJva2Utd2lkdGg9IjMiIGZpbGw9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgcXg9IjEwMCIgcXk9Ijk1Ii8+PHBhdGggZD0iTTYwIDcyTDQ1IDY1IiBzdHJva2U9IiNBNTQ0MjAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PHBhdGggZD0iTTYwIDc3TDQ1IDgwIiBzdHJva2U9IiNBNTQ0MjAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PHBhdGggZD0iTTYwIDgyTDQ1IDg1IiBzdHJva2U9IiNBNTQ0MjAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PHBhdGggZD0iTTkwIDcyTDEwNSA2NSIgc3Ryb2tlPSIjQTU0NDIwIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik05MCA3N0wxMDUgODAiIHN0cm9rZT0iI0E1NDQyMCIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNOTEgODJMMTA1IDg1IiBzdHJva2U9IiNBNTQ0MjAiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9zdmc+" alt="Cat" />` : `<span style="font-size: 4rem;">${animalEmoji}</span>`}
+                            ${getAnimalPlaceholderPhoto(animalType, 'medium')}
                         </div>
                     `}
                 </div>
@@ -877,7 +890,7 @@ function openCurrentAnimalDetail(appointmentId) {
                         </div>
                     ` : `
                         <div class="animal-photo-large-placeholder ${animalType.toLowerCase()}">
-                            ${animalType === 'Dog' ? `<img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJkb2dGcmFkaTIiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojREVCNTg3Ii8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojRjVEMzgyIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PGNpcmNsZSBjeD0iMTAwIiBjeT0iMTAwIiByPSI5MCIgZmlsbD0idXJsKCNkb2dGcmFkaTIpIi8+PHBhdGggZD0iTTYwIDcwTDUwIDk1TDcwIDk1WiIgZmlsbD0iIzhCNzM1NSIvPjxwYXRoIGQ9Ik0xNDAgNzBMMTUwIDk1TDEzMCA5NVoiIGZpbGw9IiM4QjczNTUiLz48Y2lyY2xlIGN4PSI4NSIgY3k9Ijk1IiByPSI2IiBmaWxsPSIjMDAwIi8+PGNpcmNsZSBjeD0iMTE1IiBjeT0iOTUiIHI9IjYiIGZpbGw9IiMwMDAiLz48cGF0aCBkPSJNOTUgODVDOTUgODUgOTkgMTAwIDEwMCAxMDVDMTA2IDEwMCAxMTAgODUgMTEwIDg1IiBzdHJva2U9IiMwMDAiIHN0cm9rZS13aWR0aD0iMyIgZmlsbD0ibm9uZSIvPjxwYXRoIGQ9Ik0xMTAgMTM1SDE0MEwxNTUgMTcwSDU1WiIgZmlsbD0iI0YwMzU4NiIvPjxwYXRoIGQ9Ik0xMTAgMTM1SDUwIiBzdHJva2U9IiNGMDM1ODYiIHN0cm9rZS13aWR0aD0iNCIvPjwvc3ZnPg==" alt="Dog" />` : animalType === 'Cat' ? `<img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJjYXRGcmFkaTIiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojRkZENzAwO3N0b3Atb3BhY2l0eToxIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdHlsZT0ic3RvcC1jb2xvcjojRkZBNTgwO3N0b3Atb3BhY2l0eToxIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PGNpcmNsZSBjeD0iMTAwIiBjeT0iMTAwIiByPSI5NSIgZmlsbD0iIzY0MzI5NiIvLz48cmVjdCB4PSI1NSIgeT0iNjAiIHdpZHRoPSI5MCIgaGVpZ2h0PSI3MCIgcng9IjIwIiBmaWxsPSJ1cmwoI2NhdEZyYWRpMikiLz48cGF0aCBkPSJNNjUgNjVMNTUgMjVMNzUgMjVaIiBmaWxsPSJ1cmwoI2NhdEZyYWRpMikiLz48cGF0aCBkPSJNMTM1IDY1TDE0NSAyNUwxMjUgMjVaIiBmaWxsPSJ1cmwoI2NhdEZyYWRpMikiLz48Y2lyY2xlIGN4PSI4NSIgY3k9Ijk1IiByPSI3IiBmaWxsPSIjMDAwIi8+PGNpcmNsZSBjeD0iMTE1IiBjeT0iOTUiIHI9IjciIGZpbGw9IiMwMDAiLz48cGF0aCBkPSJNMTAwIDEwNUw5MyAxMDBMMTA3IDEwMFoiIGZpbGw9IiNGRjk3QUMiLz48cGF0aCBkPSJNOTMgMTEwQzkzIDExMCAxMDAgMTI1IDEwMCAxMjUiIHN0cm9rZT0iI0ZGOTdBQyIgc3Ryb2tlLXdpZHRoPSI0IiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHF4PSIxMTAiIHF5PSIxMjUiLz48cGF0aCBkPSJNODAgOTVMNjAgODUiIHN0cm9rZT0iI0E1NDQyMCIgc3Ryb2tlLXdpZHRoPSIzIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNODAgMTAwTDYwIDEwNSIgc3Ryb2tlPSIjQTU0NDIwIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik04MCAxMDVMNjAgMTEwIiBzdHJva2U9IiNBNTQ0MjAiIHN0cm9rZS13aWR0aD0iMyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PHBhdGggZD0iTTEyMCA5NUwxNDAgODUiIHN0cm9rZT0iI0E1NDQyMCIgc3Ryb2tlLXdpZHRoPSIzIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMTIwIDEwMEwxNDAgMTA1IiBzdHJva2U9IiNBNTQ0MjAiIHN0cm9rZS13aWR0aD0iMyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PHBhdGggZD0iTTEyMCAxMDVMMTQwIDExMCIgc3Ryb2tlPSIjQTU0NDIwIiBzdHJva2Utd2lkdGg9IjMiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjwvc3ZnPg==" alt="Cat" />` : `<span class="animal-icon-large">${animalEmoji}</span>`}
+                            ${getAnimalPlaceholderPhoto(animalType, 'large')}
                         </div>
                     `}
                 </div>
