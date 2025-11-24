@@ -1781,15 +1781,21 @@
 .today-appointment-item {
     background: rgba(255, 255, 255, 0.95);
     color: var(--text-dark);
-    padding: 1rem;
-    border-radius: 10px;
+    padding: 1.25rem;
+    border-radius: 12px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: 1.5rem;
     transition: var(--transition);
     cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+}
+
+.today-appointment-item:last-child {
+    margin-bottom: 0;
 }
 
 .today-appointment-item:hover {
@@ -1822,6 +1828,54 @@
     font-size: 0.9rem;
 }
 
+.today-appointment-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.appointment-time,
+.appointment-contact {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    color: var(--text-dark);
+    font-size: 0.9rem;
+}
+
+.detail-icon {
+    font-size: 1rem;
+    opacity: 0.7;
+}
+
+.contact-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.contact-link:hover {
+    text-decoration: underline;
+}
+
+.appointment-notes {
+    margin: 0.5rem 0 0 0;
+    padding: 0.5rem;
+    background: rgba(139, 115, 85, 0.1);
+    border-radius: 6px;
+    color: var(--text-light);
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
+.notes-label {
+    font-weight: 600;
+    font-style: normal;
+    color: var(--text-dark);
+}
+
 .today-appointment-badges {
     display: flex;
     gap: 0.5rem;
@@ -1830,43 +1884,48 @@
 }
 
 .today-badge {
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 0.8rem;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 0.75rem;
     font-weight: 600;
-    text-transform: capitalize;
-}
-
-.today-badge.boarding {
-    background: rgba(139, 115, 85, 0.2);
-    color: var(--primary-color);
-}
-
-.today-badge.grooming {
-    background: rgba(74, 124, 89, 0.2);
-    color: var(--secondary-color);
-}
-
-.today-badge.both {
-    background: rgba(244, 162, 97, 0.2);
-    color: var(--accent-color);
-}
-
-.today-badge.status {
-    background: rgba(255, 255, 255, 0.3);
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
     color: white;
 }
 
-.today-badge.scheduled {
-    background: rgba(108, 117, 125, 0.3);
+.today-badge.type {
+    background: rgba(139, 115, 85, 0.9);
+    color: white;
 }
 
-.today-badge.confirmed {
-    background: rgba(40, 167, 69, 0.3);
+.today-badge.type.boarding {
+    background: rgba(139, 115, 85, 0.9);
 }
 
-.today-badge.in-progress {
-    background: rgba(0, 123, 255, 0.3);
+.today-badge.status {
+    background: rgba(108, 117, 125, 0.8);
+    color: white;
+}
+
+.today-badge.status.scheduled {
+    background: rgba(108, 117, 125, 0.8);
+}
+
+.today-badge.status.confirmed {
+    background: rgba(40, 167, 69, 0.9);
+}
+
+.today-badge.status.in-progress {
+    background: rgba(0, 123, 255, 0.9);
+}
+
+.today-badge.status.checked-in {
+    background: rgba(40, 167, 69, 0.9);
+}
+
+.today-badge.status.checked-out {
+    background: rgba(220, 53, 69, 0.9);
 }
 
 .no-appointments-today {
@@ -3416,7 +3475,8 @@
     transition: var(--transition);
     min-height: 56px;
     flex: 1;
-    min-width: 200px;
+    min-width: 250px;
+    cursor: pointer;
 }
 
 .action-btn-large .action-icon {
@@ -3729,14 +3789,49 @@
 .today-appointment-actions {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.75rem;
     align-items: flex-end;
+    flex-shrink: 0;
 }
 
 .appointment-actions-buttons {
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.btn-small {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    white-space: nowrap;
+}
+
+.btn-small.btn-primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-small.btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-small.btn-secondary {
+    background: rgba(40, 167, 69, 0.9);
+    color: white;
+}
+
+.btn-small.btn-secondary:hover {
+    background: rgba(40, 167, 69, 1);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* Mobile Styles for Today Page */

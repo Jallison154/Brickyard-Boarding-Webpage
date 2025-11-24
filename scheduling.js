@@ -431,31 +431,66 @@ function renderTodayAppointments() {
         return;
     }
 
+    // Helper function to format status text
+    function formatStatus(status) {
+        if (!status) return 'Scheduled';
+        return status.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    }
+    
+    // Helper function to format type text
+    function formatType(type) {
+        if (!type || type === 'grooming') return 'Boarding'; // Remove grooming, default to boarding
+        return type.charAt(0).toUpperCase() + type.slice(1);
+    }
+
     todayContainer.innerHTML = todayAppointments.map(apt => {
         const client = getClientById(apt.clientId);
         const clientPhone = client ? client.phone : '';
-        const isCheckedIn = apt.checkedIn;
-        const isCheckedOut = apt.checkedOut;
+        const isCheckedIn = apt.checkedIn === true || apt.checkedIn === 'true';
+        const isCheckedOut = apt.checkedOut === true || apt.checkedOut === 'true';
+        const appointmentType = apt.type === 'grooming' ? 'boarding' : (apt.type || 'boarding'); // Remove grooming
+        const formattedType = formatType(appointmentType);
+        const formattedStatus = formatStatus(apt.status || 'scheduled');
         
         return `
             <div class="today-appointment-item">
                 <div class="today-appointment-info" onclick="editAppointment('${apt.id}')">
-                    <h4>${escapeHtml(apt.clientName)} - ${escapeHtml(apt.dogName)}</h4>
-                    ${apt.startTime ? `<p>⏰ ${apt.startTime}${apt.endTime ? ` - ${apt.endTime}` : ''}</p>` : ''}
-                    ${clientPhone ? `<p>📞 <a href="tel:${escapeHtml(clientPhone)}" onclick="event.stopPropagation()" style="color: var(--primary-color);">${escapeHtml(clientPhone)}</a></p>` : ''}
-                    ${apt.notes ? `<p style="margin-top: 0.5rem; font-style: italic;">${escapeHtml(apt.notes.substring(0, 100))}${apt.notes.length > 100 ? '...' : ''}</p>` : ''}
+                    <h4>${escapeHtml(apt.clientName || 'Unknown')} - ${escapeHtml(apt.dogName || 'Unknown')}</h4>
+                    <div class="today-appointment-details">
+                        ${apt.startTime || apt.endTime ? `
+                            <p class="appointment-time">
+                                <span class="detail-icon">⏰</span>
+                                ${apt.startTime || '08:00'}${apt.endTime ? ` - ${apt.endTime}` : ''}
+                            </p>
+                        ` : ''}
+                        ${clientPhone ? `
+                            <p class="appointment-contact">
+                                <span class="detail-icon">📞</span>
+                                <a href="tel:${escapeHtml(clientPhone)}" onclick="event.stopPropagation()" class="contact-link">${escapeHtml(clientPhone)}</a>
+                            </p>
+                        ` : ''}
+                        ${apt.notes ? `
+                            <p class="appointment-notes">
+                                <span class="notes-label">Special requests:</span> ${escapeHtml(apt.notes.substring(0, 80))}${apt.notes.length > 80 ? '...' : ''}
+                            </p>
+                        ` : ''}
+                    </div>
                 </div>
                 <div class="today-appointment-actions">
                     <div class="today-appointment-badges">
-                        <span class="today-badge ${apt.type}">${apt.type}</span>
-                        <span class="today-badge status ${apt.status}">${apt.status}</span>
-                        ${isCheckedIn ? '<span class="today-badge status confirmed">Checked In</span>' : ''}
-                        ${isCheckedOut ? '<span class="today-badge status cancelled">Checked Out</span>' : ''}
+                        <span class="today-badge type ${appointmentType}">${formattedType}</span>
+                        <span class="today-badge status ${apt.status || 'scheduled'}">${formattedStatus}</span>
+                        ${isCheckedIn ? '<span class="today-badge status checked-in">Checked In</span>' : ''}
+                        ${isCheckedOut ? '<span class="today-badge status checked-out">Checked Out</span>' : ''}
                     </div>
                     <div class="appointment-actions-buttons">
-                        ${!isCheckedIn && !isCheckedOut ? `<button class="btn-small btn-primary" onclick="openCheckinModal('${apt.id}')">Check In</button>` : ''}
-                        ${isCheckedIn && !isCheckedOut ? `<button class="btn-small btn-secondary" onclick="openCareLogModal('${apt.id}')">Care Log</button>` : ''}
-                        ${isCheckedIn && !isCheckedOut ? `<button class="btn-small btn-primary" onclick="openCheckinModal('${apt.id}', 'out')">Check Out</button>` : ''}
+                        ${!isCheckedIn && !isCheckedOut ? `
+                            <button class="btn-small btn-primary" onclick="event.stopPropagation(); openCheckinModal('${apt.id}')">Check In</button>
+                        ` : ''}
+                        ${isCheckedIn && !isCheckedOut ? `
+                            <button class="btn-small btn-secondary" onclick="event.stopPropagation(); openCareLogModal('${apt.id}')">Care Log</button>
+                            <button class="btn-small btn-primary" onclick="event.stopPropagation(); openCheckinModal('${apt.id}', 'out')">Check Out</button>
+                        ` : ''}
                     </div>
                 </div>
             </div>
