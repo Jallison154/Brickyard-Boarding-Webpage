@@ -86,6 +86,19 @@ function getAnimalIcon(animalType) {
     return `<img src="./resources/images/${iconFile}" alt="${type}" class="animal-icon" style="width: 1.2em; height: 1.2em; vertical-align: middle; display: inline-block;">`;
 }
 
+// Get animal placeholder photo (for when no photo is uploaded)
+function getAnimalPlaceholderPhoto(animalType, size = 'medium') {
+    const type = animalType || 'Dog';
+    const iconFile = type === 'Cat' ? 'cat-icon.png' : 'dog-icon.png';
+    const sizes = {
+        small: '50px',
+        medium: '150px',
+        large: '200px'
+    };
+    const photoSize = sizes[size] || sizes.medium;
+    return `<img src="./resources/images/${iconFile}" alt="${type} placeholder" style="width: 100%; height: 100%; object-fit: contain;">`;
+}
+
 // Load clients from localStorage
 function loadClientsFromStorage() {
     try {
@@ -1038,7 +1051,7 @@ function viewClientDetails(clientId) {
                         return `
                                 <div class="animal-detail-card">
                                     <div class="animal-detail-header">
-                                        <div class="animal-detail-icon">${animalIcon}</div>
+                                        <div class="animal-detail-icon">${getAnimalPlaceholderPhoto(animalType, 'small')}</div>
                                         <div class="animal-detail-info">
                                             <h4>${escapeHtml(dog.name || 'Unnamed')}</h4>
                                             ${dog.breed ? `<span class="animal-breed">${escapeHtml(dog.breed)}</span>` : ''}
