@@ -11,70 +11,95 @@ let sortOrder = 'asc'; // asc, desc
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('🔧 Clients.js: DOM loaded, initializing...');
-    loadClientsFromStorage();
-    setupEventListeners();
-    // Don't render immediately - wait for tab to be activated
-    updateStats();
-    console.log('🔧 Clients.js: Initialization complete');
+    try {
+        loadClientsFromStorage();
+        setupEventListeners();
+        // Don't render immediately - wait for tab to be activated
+        updateStats();
+    } catch (error) {
+        handleError('Failed to initialize clients module', error);
+    }
 });
 
 // Setup tab switching (for compatibility with admin.js)
 function setupTabs() {
-    console.log('🔧 Clients.js: setupTabs() called');
-    const tabBtns = document.querySelectorAll('.tab-btn');
-    console.log('🔧 Clients.js: Found', tabBtns.length, 'tab buttons');
-    
-    tabBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const targetTab = btn.dataset.tab;
-            console.log('🔧 Clients.js: Tab clicked:', targetTab);
-            
-            // Update active tab button
-            tabBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            
-            // Show/hide tab content
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
+    try {
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        if (!tabBtns || tabBtns.length === 0) return;
+        
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                try {
+                    const targetTab = btn.dataset.tab;
+                    if (!targetTab) return;
+                    
+                    // Update active tab button
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    // Show/hide tab content
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    const targetContent = document.getElementById(targetTab + 'Tab');
+                    if (targetContent) {
+                        targetContent.classList.add('active');
+                    }
+                    
+                    // Load data for the active tab
+                    if (targetTab === 'clients') {
+                        setTimeout(() => {
+                            filterAndRenderClients();
+                        }, 50);
+                    } else if (targetTab === 'current' && typeof loadCurrentAnimalsDetailed === 'function') {
+                        setTimeout(() => {
+                            loadCurrentAnimalsDetailed();
+                        }, 50);
+                    } else if (targetTab === 'today' && typeof loadTodayOperations === 'function') {
+                        setTimeout(() => {
+                            loadTodayOperations();
+                        }, 50);
+                    }
+                } catch (error) {
+                    handleError('Error switching tabs', error);
+                }
             });
-            const targetContent = document.getElementById(targetTab + 'Tab');
-            if (targetContent) {
-                targetContent.classList.add('active');
-                console.log('🔧 Clients.js: Activated tab content:', targetTab + 'Tab');
-            } else {
-                console.error('🔧 Clients.js: Tab content not found:', targetTab + 'Tab');
-            }
-            
-            // Load data for the active tab
-            if (targetTab === 'clients') {
-                console.log('🔧 Clients.js: Loading clients data...');
-                setTimeout(() => {
-                    filterAndRenderClients();
-                }, 50);
-            } else if (targetTab === 'current' && typeof loadCurrentAnimalsDetailed === 'function') {
-                console.log('🔧 Clients.js: Loading current animals data...');
-                setTimeout(() => {
-                    loadCurrentAnimalsDetailed();
-                }, 50);
-            } else if (targetTab === 'today' && typeof loadTodayOperations === 'function') {
-                console.log('🔧 Clients.js: Loading today operations data...');
-                setTimeout(() => {
-                    loadTodayOperations();
-                }, 50);
-            }
         });
-    });
+    } catch (error) {
+        handleError('Failed to setup tabs', error);
+    }
+}
+
+// Error handling utility
+function handleError(message, error) {
+    // Only log in development, show user-friendly message in production
+    if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+        console.error(message, error);
+    }
+    // Could add user notification here if needed
+}
+
+// Get animal icon image
+function getAnimalIcon(animalType) {
+    const type = animalType || 'Dog';
+    const iconFile = type === 'Cat' ? 'cat-icon.png' : 'dog-icon.png';
+    return `<img src="resources/images/${iconFile}" alt="${type}" class="animal-icon" style="width: 1.2em; height: 1.2em; vertical-align: middle; display: inline-block;">`;
 }
 
 // Load clients from localStorage
 function loadClientsFromStorage() {
     try {
         const stored = localStorage.getItem('clients');
-        clients = stored ? JSON.parse(stored) : [];
-        console.log(`Loaded ${clients.length} clients from storage`);
+        if (!stored) {
+            clients = [];
+            return;
+        }
+        clients = JSON.parse(stored);
+        if (!Array.isArray(clients)) {
+            clients = [];
+        }
     } catch (error) {
-        console.error('Error loading clients:', error);
+        handleError('Error loading clients from storage', error);
         clients = [];
     }
 }
@@ -82,10 +107,17 @@ function loadClientsFromStorage() {
 // Save clients to localStorage
 function saveClientsToStorage() {
     try {
+        if (!Array.isArray(clients)) {
+            handleError('Clients data is invalid', new Error('Clients is not an array'));
+            return;
+        }
         localStorage.setItem('clients', JSON.stringify(clients));
-        console.log(`Saved ${clients.length} clients to storage`);
     } catch (error) {
-        console.error('Error saving clients:', error);
+        handleError('Error saving clients to storage', error);
+        // Check if storage quota is exceeded
+        if (error.name === 'QuotaExceededError') {
+            alert('Storage limit exceeded. Please contact support.');
+        }
     }
 }
 
@@ -354,7 +386,7 @@ function renderCardView(clients) {
                         </div>
                         ` : ''}
                         <div class="detail-item">
-                            <span class="detail-icon">🐕</span>
+                            <span class="detail-icon">${getAnimalIcon('Dog')}</span>
                             <span>${dogCount} animal${dogCount !== 1 ? 's' : ''}</span>
                     </div>
                     </div>
@@ -368,7 +400,7 @@ function renderCardView(clients) {
                         <div class="animals-list">
                             ${client.dogs.map(dog => {
                                 const animalType = dog.animalType || 'Dog';
-                                const animalIcon = animalType === 'Cat' ? '🐱' : '🐕';
+                                const animalIcon = getAnimalIcon(animalType);
                                 const dogHasMeds = dog.medications && (
                                     Array.isArray(dog.medications) ? dog.medications.length > 0 : 
                                     (typeof dog.medications === 'string' ? dog.medications.trim() : false)
@@ -725,75 +757,133 @@ function removeDogForm(button) {
     }
 }
 
+// Input validation and sanitization utilities
+function sanitizeInput(input) {
+    if (typeof input !== 'string') return '';
+    return input.trim().replace(/[<>]/g, '');
+}
+
+function validateEmail(email) {
+    if (!email) return true; // Email is optional
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+function validatePhone(phone) {
+    if (!phone) return false;
+    // Remove common phone formatting characters
+    const cleaned = phone.replace(/[\s\-\(\)]/g, '');
+    // Check if it contains at least 10 digits
+    return /^\d{10,}$/.test(cleaned);
+}
+
 // Save client
 function saveClient() {
     const form = document.getElementById('clientForm');
-    if (!form) return;
+    if (!form) {
+        handleError('Client form not found', new Error('Form element missing'));
+        return;
+    }
 
-    const formData = new FormData(form);
-    const clientId = formData.get('clientId') || Date.now().toString();
-    
-    // Collect dog data
-    const dogs = [];
-    const dogForms = document.querySelectorAll('.dog-form');
-    dogForms.forEach(form => {
-        const dogData = {
-            id: form.querySelector('.dog-id').value,
-            animalType: form.querySelector('.dog-type').value || 'Dog',
-            name: form.querySelector('.dog-name').value,
-            breed: form.querySelector('.dog-breed').value,
-            age: form.querySelector('.dog-age').value,
-            weight: form.querySelector('.dog-weight').value,
-            gender: form.querySelector('.dog-gender').value,
-            notes: form.querySelector('.dog-notes').value
+    try {
+        const formData = new FormData(form);
+        const clientId = formData.get('clientId') || Date.now().toString();
+        
+        // Validate required fields
+        const familyName = sanitizeInput(formData.get('familyName') || '');
+        const contactName = sanitizeInput(formData.get('contactName') || '');
+        const phone = sanitizeInput(formData.get('phone') || '');
+        
+        if (!familyName || !contactName) {
+            alert('Please fill in required fields: Family Name and Contact Name');
+            return;
+        }
+        
+        if (!validatePhone(phone)) {
+            alert('Please enter a valid phone number');
+            return;
+        }
+        
+        // Validate email if provided
+        const email = sanitizeInput(formData.get('email') || '');
+        if (email && !validateEmail(email)) {
+            alert('Please enter a valid email address');
+            return;
+        }
+        
+        // Collect dog data with validation
+        const dogs = [];
+        const dogForms = document.querySelectorAll('.dog-form');
+        dogForms.forEach(form => {
+            const nameInput = form.querySelector('.dog-name');
+            const name = nameInput ? sanitizeInput(nameInput.value) : '';
+            
+            if (!name) {
+                alert('Please enter a name for all animals');
+                return;
+            }
+            
+            const dogData = {
+                id: form.querySelector('.dog-id')?.value || '',
+                animalType: form.querySelector('.dog-type')?.value || 'Dog',
+                name: name,
+                breed: sanitizeInput(form.querySelector('.dog-breed')?.value || ''),
+                age: sanitizeInput(form.querySelector('.dog-age')?.value || ''),
+                weight: sanitizeInput(form.querySelector('.dog-weight')?.value || ''),
+                gender: form.querySelector('.dog-gender')?.value || '',
+                notes: sanitizeInput(form.querySelector('.dog-notes')?.value || '')
+            };
+            dogs.push(dogData);
+        });
+
+        const clientData = {
+            id: clientId,
+            familyName: familyName,
+            contactName: contactName,
+            email: email,
+            phone: phone,
+            address: sanitizeInput(formData.get('address') || ''),
+            emergencyContact: sanitizeInput(formData.get('emergencyContact') || ''),
+            emergencyPhone: sanitizeInput(formData.get('emergencyPhone') || ''),
+            vetName: sanitizeInput(formData.get('vetName') || ''),
+            vetPhone: sanitizeInput(formData.get('vetPhone') || ''),
+            notes: sanitizeInput(formData.get('notes') || ''),
+            dogs: dogs,
+            createdAt: clientId ? (getClientById(clientId)?.createdAt || new Date().toISOString()) : new Date().toISOString(),
+            updatedAt: new Date().toISOString()
         };
-        dogs.push(dogData);
-    });
 
-    const clientData = {
-        id: clientId,
-        familyName: formData.get('familyName'),
-        contactName: formData.get('contactName'),
-        email: formData.get('email'),
-        phone: formData.get('phone'),
-        address: formData.get('address'),
-        emergencyContact: formData.get('emergencyContact'),
-        emergencyPhone: formData.get('emergencyPhone'),
-        vetName: formData.get('vetName'),
-        vetPhone: formData.get('vetPhone'),
-        notes: formData.get('notes'),
-        dogs: dogs,
-        createdAt: clientId ? getClientById(clientId)?.createdAt || new Date().toISOString() : new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-    };
+        // Update or add client
+        const existingIndex = clients.findIndex(c => c.id === clientId);
+        if (existingIndex !== -1) {
+            clients[existingIndex] = clientData;
+        } else {
+            clients.push(clientData);
+        }
 
-    // Update or add client
-    const existingIndex = clients.findIndex(c => c.id === clientId);
-    if (existingIndex !== -1) {
-        clients[existingIndex] = clientData;
-    } else {
-        clients.push(clientData);
-    }
-
-    saveClientsToStorage();
-    
-    // Reset form tracking after save
-    if (typeof resetFormTracking === 'function') {
-        resetFormTracking('clientForm');
-    }
-    
-    // Close modal without checking for unsaved changes (since we just saved)
-    const modal = document.getElementById('clientModal');
-    if (modal) {
-        modal.classList.remove('active');
-        form.reset();
-        const clientIdInput = document.getElementById('clientId');
+        saveClientsToStorage();
+        
+        // Reset form tracking after save
+        if (typeof resetFormTracking === 'function') {
+            resetFormTracking('clientForm');
+        }
+        
+        // Close modal without checking for unsaved changes (since we just saved)
+        const modal = document.getElementById('clientModal');
+        if (modal) {
+            modal.classList.remove('active');
+            form.reset();
+            const clientIdInput = document.getElementById('clientId');
         if (clientIdInput) clientIdInput.value = '';
         const dogsContainer = document.getElementById('dogsContainer');
         if (dogsContainer) dogsContainer.innerHTML = '';
+        }
+        
+        filterAndRenderClients();
+    } catch (error) {
+        handleError('Error saving client', error);
+        alert('An error occurred while saving the client. Please try again.');
     }
-    
-    filterAndRenderClients();
 }
 
 // Utility functions
@@ -939,7 +1029,7 @@ function viewClientDetails(clientId) {
                     <div class="animals-details-grid">
                     ${client.dogs.map(dog => {
                             const animalType = dog.animalType || 'Dog';
-                            const animalIcon = animalType === 'Cat' ? '🐱' : '🐕';
+                            const animalIcon = getAnimalIcon(animalType);
                             const hasMedications = dog.medications && (
                                 Array.isArray(dog.medications) ? dog.medications.length > 0 : 
                                 (typeof dog.medications === 'string' ? dog.medications.trim() : false)
@@ -1093,15 +1183,15 @@ function escapeHtml(text) {
 
 // Alias for compatibility with admin.js
 function loadClients() {
-    console.log('🔧 Clients.js: loadClients() called');
-    // Initialize the page if not already done
-    if (clients.length === 0) {
-        console.log('🔧 Clients.js: Loading clients from storage...');
-        loadClientsFromStorage();
+    try {
+        // Initialize the page if not already done
+        if (!Array.isArray(clients) || clients.length === 0) {
+            loadClientsFromStorage();
+        }
+        filterAndRenderClients();
+    } catch (error) {
+        handleError('Error loading clients', error);
     }
-    console.log('🔧 Clients.js: Rendering clients...');
-    filterAndRenderClients();
-    console.log('🔧 Clients.js: loadClients() complete');
 }
 
 // Make functions globally available
@@ -1146,7 +1236,10 @@ function startAppointmentFlow(initialClientId = null) {
             return an.localeCompare(bn);
         });
         const buildRows = (items) => sortItems(items).map(c => {
-            const animals = (c.dogs || []).map(d => `${(d.animalType||'Dog')==='Cat'?'🐱':'🐕'} ${escapeHtml(d.name||'Unnamed')}`).join(', ');
+            const animals = (c.dogs || []).map(d => {
+                const icon = getAnimalIcon(d.animalType || 'Dog');
+                return `${icon} ${escapeHtml(d.name||'Unnamed')}`;
+            }).join(', ');
             return `
                 <tr class="select-row" data-client-id="${c.id}" style="cursor:pointer;">
                     <td style="padding:0.5rem 0.75rem;">${escapeHtml(c.contactName || c.familyName || 'Unnamed')}</td>
@@ -1207,7 +1300,7 @@ function startAppointmentFlow(initialClientId = null) {
         titleEl.textContent = 'Select Animal';
         const list = c.dogs.map(d => `
             <button class="btn" data-dog-id="${d.id}" style="width:100%; text-align:left; margin:0.25rem 0;">
-                ${(d.animalType || 'Dog') === 'Cat' ? '🐱' : '🐕'} ${escapeHtml(d.name || 'Unnamed')}
+                ${getAnimalIcon(d.animalType || 'Dog')} ${escapeHtml(d.name || 'Unnamed')}
             </button>
         `).join('');
         contentEl.innerHTML = `<div style="max-height:60vh; overflow:auto;">${list}</div>`;

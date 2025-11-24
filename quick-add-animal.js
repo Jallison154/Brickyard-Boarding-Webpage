@@ -332,8 +332,11 @@ function saveQuickAddClient() {
         clients.push(client);
         localStorage.setItem('clients', JSON.stringify(clients));
     } catch (e) {
-        console.error('Error saving client:', e);
-        alert('Error saving client.');
+        if (e.name === 'QuotaExceededError') {
+            alert('Storage limit exceeded. Please contact support.');
+        } else {
+            alert('Error saving client. Please try again.');
+        }
         return false;
     }
 
@@ -392,7 +395,7 @@ function loadBreedsDatalist() {
             ).join('');
         }
     } catch (e) {
-        console.error('Error loading breeds:', e);
+        // Silently fail - breeds datalist is optional
     }
 }
 

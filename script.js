@@ -196,8 +196,13 @@ if (contactForm) {
                 successMsg.remove();
             }, 5000);
         } catch (error) {
-            console.error('Error saving submission:', error);
-            alert('Thank you for your message! We will contact you soon.');
+            // Handle storage errors gracefully
+            if (error.name === 'QuotaExceededError') {
+                alert('Unable to save your message. Please try again later or contact us directly.');
+            } else {
+                // Still show success message to user even if storage fails
+                alert('Thank you for your message! We will contact you soon.');
+            }
         }
     });
 }

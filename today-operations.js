@@ -17,54 +17,72 @@ function loadTodayOperations() {
     updateTodayStats();
 }
 
+// Error handling utility
+function handleError(message, error) {
+    // Only log in development
+    if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+        console.error(message, error);
+    }
+}
+
+// Get animal icon image
+function getAnimalIcon(animalType) {
+    const type = animalType || 'Dog';
+    const iconFile = type === 'Cat' ? 'cat-icon.png' : 'dog-icon.png';
+    return `<img src="resources/images/${iconFile}" alt="${type}" class="animal-icon" style="width: 1.2em; height: 1.2em; vertical-align: middle; display: inline-block;">`;
+}
+
+// Get animal icon for large display
+function getAnimalIconLarge(animalType) {
+    const type = animalType || 'Dog';
+    const iconFile = type === 'Cat' ? 'cat-icon.png' : 'dog-icon.png';
+    return `<img src="resources/images/${iconFile}" alt="${type}" class="animal-icon-large" style="width: 3em; height: 3em; display: block; margin: 0 auto;">`;
+}
+
 // Update today's stats
 function updateTodayStats() {
     try {
         const appointments = getAppointments();
+        if (!Array.isArray(appointments)) {
+            appointments = [];
+        }
         const today = new Date().toISOString().split('T')[0];
-        
-        console.log('🔍 updateTodayStats - Total appointments:', appointments.length);
-        console.log('📅 Today date:', today);
         
         // Count checked-in animals
         const checkedInCount = appointments.filter(apt => {
+            if (!apt) return false;
             const isCheckedIn = apt.checkedIn === true || apt.checkedIn === 'true';
             const isCheckedOut = apt.checkedOut === true || apt.checkedOut === 'true';
-            const result = isCheckedIn && !isCheckedOut;
-            if (result) {
-                console.log('✅ Checked in animal:', apt.dogName, 'checkedIn:', apt.checkedIn, 'checkedOut:', apt.checkedOut);
-            }
-            return result;
+            return isCheckedIn && !isCheckedOut;
         }).length;
         
         // Count today's arrivals
         const arrivalsCount = appointments.filter(apt => {
+            if (!apt) return false;
             const isCheckedIn = apt.checkedIn === true || apt.checkedIn === 'true';
             const isCheckedOut = apt.checkedOut === true || apt.checkedOut === 'true';
             if (isCheckedIn || isCheckedOut) return false;
             if (!apt.startDate) return false;
-            const startDate = new Date(apt.startDate).toISOString().split('T')[0];
-            const result = startDate === today;
-            if (result) {
-                console.log('📅 Today arrival:', apt.dogName, 'startDate:', apt.startDate);
+            try {
+                const startDate = new Date(apt.startDate).toISOString().split('T')[0];
+                return startDate === today;
+            } catch (e) {
+                return false;
             }
-            return result;
         }).length;
-        
-        console.log('📊 Counts - Checked in:', checkedInCount, 'Arrivals:', arrivalsCount);
         
         // Update UI
         const checkedInEl = document.getElementById('checkedInCount');
         const arrivalsEl = document.getElementById('arrivalsCount');
         
         if (checkedInEl) {
-            checkedInEl.textContent = checkedInCount;
+            checkedInEl.textContent = checkedInCount || 0;
         }
         if (arrivalsEl) {
-            arrivalsEl.textContent = arrivalsCount;
+            arrivalsEl.textContent = arrivalsCount || 0;
         }
     } catch (error) {
-        console.error('Error updating today stats:', error);
+        handleError('Error updating today stats', error);
     }
 }
 
@@ -122,7 +140,7 @@ function loadArrivals() {
         
         // Determine animal type and icon
         const animalType = dog && dog.animalType ? dog.animalType : 'Dog';
-        const animalIcon = animalType === 'Cat' ? '🐈' : '🐕';
+        const animalIcon = getAnimalIcon(animalType);
         const animalEmoji = animalType === 'Cat' ? '🐱' : '🐶';
         
         return `
@@ -189,7 +207,7 @@ function loadDepartures() {
         
         // Determine animal type and icon
         const animalType = dog && dog.animalType ? dog.animalType : 'Dog';
-        const animalIcon = animalType === 'Cat' ? '🐈' : '🐕';
+        const animalIcon = getAnimalIcon(animalType);
         const animalEmoji = animalType === 'Cat' ? '🐱' : '🐶';
         
         return `
@@ -243,7 +261,6 @@ function loadCurrentDogs() {
         // Get fresh data directly from localStorage to avoid caching issues
         const appointmentsStr = localStorage.getItem('appointments');
         if (!appointmentsStr) {
-            console.warn('⚠️ No appointments found in localStorage');
             const currentDogsList = document.getElementById('currentDogsList');
             if (currentDogsList) {
                 currentDogsList.innerHTML = `<div class="empty-state"><p>No animals currently checked in</p></div>`;
@@ -251,8 +268,16 @@ function loadCurrentDogs() {
             return;
         }
         
-        const appointments = JSON.parse(appointmentsStr);
-        console.log('🔍 loadCurrentDogs - Total appointments loaded:', appointments.length);
+        let appointments;
+        try {
+            appointments = JSON.parse(appointmentsStr);
+            if (!Array.isArray(appointments)) {
+                appointments = [];
+            }
+        } catch (parseError) {
+            handleError('Error parsing appointments data', parseError);
+            appointments = [];
+        }
         
         // Filter for checked-in animals that haven't been checked out
         const currentDogs = [];
@@ -264,20 +289,16 @@ function loadCurrentDogs() {
             const isCheckedIn = apt.checkedIn === true || apt.checkedIn === 'true';
             const isCheckedOut = apt.checkedOut === true || apt.checkedOut === 'true';
             
-            console.log(`  Appointment ${apt.id}: ${apt.dogName || 'Unknown'} - checkedIn: ${apt.checkedIn} (${isCheckedIn}), checkedOut: ${apt.checkedOut} (${isCheckedOut})`);
-            
             // Include if checked in AND not checked out
             if (isCheckedIn && !isCheckedOut) {
                 currentDogs.push(apt);
             }
         }
         
-        console.log('✅ loadCurrentDogs - Found', currentDogs.length, 'current animals:', currentDogs.map(a => a.dogName));
-        
         const currentDogsList = document.getElementById('currentDogsList');
         
         if (!currentDogsList) {
-            console.error('❌ currentDogsList element not found in DOM');
+            handleError('currentDogsList element not found in DOM', new Error('DOM element missing'));
             return;
         }
         
@@ -342,7 +363,7 @@ function loadCurrentDogs() {
         
         // Determine animal type and icon
         const animalType = dog && dog.animalType ? dog.animalType : 'Dog';
-        const animalIcon = animalType === 'Cat' ? '🐈' : '🐕';
+        const animalIcon = getAnimalIcon(animalType);
         const animalEmoji = animalType === 'Cat' ? '🐱' : '🐶';
         
         return `
@@ -438,7 +459,7 @@ function loadCurrentDogs() {
     }).join('');
     
     } catch (error) {
-        console.error('❌ Error in loadCurrentDogs:', error);
+        handleError('Error in loadCurrentDogs', error);
         const currentDogsList = document.getElementById('currentDogsList');
         if (currentDogsList) {
             currentDogsList.innerHTML = `<div class="empty-state"><p>Error loading current animals</p></div>`;
@@ -566,9 +587,13 @@ function handleCheckOutClick(appointmentId) {
 
 // Perform actual check-in
 function performCheckIn(appointmentId) {
+    if (!appointmentId) {
+        handleError('No appointment ID provided for check-in', new Error('Missing appointment ID'));
+        return;
+    }
     const appointment = getAppointmentById(appointmentId);
     if (!appointment) {
-        console.error('Appointment not found:', appointmentId);
+        handleError('Appointment not found for check-in', new Error(`Appointment ID: ${appointmentId}`));
         return;
     }
     
@@ -606,7 +631,7 @@ function performCheckIn(appointmentId) {
                 checkInLogs = JSON.parse(logsStr);
             }
         } catch (e) {
-            console.error('Error reading check-in logs:', e);
+            handleError('Error reading check-in logs', e);
         }
         
         // Add new check-in log
@@ -614,26 +639,15 @@ function performCheckIn(appointmentId) {
         localStorage.setItem('checkInLogs', JSON.stringify(checkInLogs));
         
         // Save updated appointment
-        localStorage.setItem('appointments', JSON.stringify(appointments));
-        
-        console.log('Animal checked in:', {
-            id: appointmentId,
-            name: apt.dogName,
-            checkedIn: apt.checkedIn,
-            checkedOut: apt.checkedOut,
-            appointments: appointments.filter(a => a.checkedIn && !a.checkedOut).length
-        });
-        
-        // Verify the save worked
-        const verifyStr = localStorage.getItem('appointments');
-        const verifyApps = verifyStr ? JSON.parse(verifyStr) : [];
-        const verifyApt = verifyApps.find(a => a.id === appointmentId);
-        console.log('🔍 Verification after check-in:', {
-            saved: !!verifyApt,
-            checkedIn: verifyApt ? verifyApt.checkedIn : 'N/A',
-            checkedOut: verifyApt ? verifyApt.checkedOut : 'N/A',
-            name: verifyApt ? verifyApt.dogName : 'N/A'
-        });
+        try {
+            localStorage.setItem('appointments', JSON.stringify(appointments));
+        } catch (saveError) {
+            handleError('Error saving appointment during check-in', saveError);
+            if (saveError.name === 'QuotaExceededError') {
+                alert('Storage limit exceeded. Please contact support.');
+            }
+            return;
+        }
         
         // Force refresh all sections
         setTimeout(() => {
@@ -647,7 +661,7 @@ function performCheckIn(appointmentId) {
         
         // Check-in completed successfully
     } else {
-        console.error('Appointment not found in appointments array:', appointmentId);
+        handleError('Appointment not found in appointments array during check-in', new Error(`Appointment ID: ${appointmentId}`));
     }
 }
 
@@ -685,7 +699,7 @@ function performCheckOut(appointmentId) {
                 checkInLogs = JSON.parse(logsStr);
             }
         } catch (e) {
-            console.error('Error reading check-in logs:', e);
+            handleError('Error reading check-in logs', e);
         }
         
         // Add new check-out log
@@ -693,14 +707,15 @@ function performCheckOut(appointmentId) {
         localStorage.setItem('checkInLogs', JSON.stringify(checkInLogs));
         
         // Save updated appointment
-        localStorage.setItem('appointments', JSON.stringify(appointments));
-        
-        console.log('Animal checked out:', {
-            id: appointmentId,
-            name: apt.dogName,
-            checkedIn: apt.checkedIn,
-            checkedOut: apt.checkedOut
-        });
+        try {
+            localStorage.setItem('appointments', JSON.stringify(appointments));
+        } catch (saveError) {
+            handleError('Error saving appointment during check-out', saveError);
+            if (saveError.name === 'QuotaExceededError') {
+                alert('Storage limit exceeded. Please contact support.');
+            }
+            return;
+        }
         
         // Force refresh all sections
         setTimeout(() => {
@@ -722,7 +737,6 @@ function loadCurrentAnimalsDetailed() {
         // Get fresh data directly from localStorage
         const appointmentsStr = localStorage.getItem('appointments');
         if (!appointmentsStr) {
-            console.warn('⚠️ No appointments found in localStorage');
             const gridContainer = document.getElementById('currentAnimalsGrid');
             if (gridContainer) {
                 gridContainer.innerHTML = `<div class="empty-state"><p>No animals currently checked in</p></div>`;
@@ -745,13 +759,11 @@ function loadCurrentAnimalsDetailed() {
             }
         }
         
-        console.log('✅ loadCurrentAnimalsDetailed - Found', currentDogs.length, 'current animals');
-        
         const gridContainer = document.getElementById('currentAnimalsGrid');
         const countElement = document.getElementById('currentAnimalsCount');
         
         if (!gridContainer) {
-            console.error('❌ currentAnimalsGrid element not found in DOM');
+            handleError('currentAnimalsGrid element not found in DOM', new Error('DOM element missing'));
             return;
         }
         
@@ -782,7 +794,7 @@ function loadCurrentAnimalsDetailed() {
         const firstPhoto = dog && dog.documents && dog.documents.length > 0 ? 
             dog.documents.find(doc => doc.type && doc.type.startsWith('image/')) : null;
         const animalType = dog && dog.animalType ? dog.animalType : 'Dog';
-        const animalEmoji = animalType === 'Cat' ? '🐱' : '🐶';
+        const animalEmoji = getAnimalIcon(animalType);
         
         return `
             <div class="current-animal-card" onclick="openCurrentAnimalDetail('${apt.id}')">
@@ -801,11 +813,11 @@ function loadCurrentAnimalsDetailed() {
         }).join('');
     
     } catch (error) {
-        console.error('❌ Error in loadCurrentAnimalsDetailed:', error);
-        console.error('Stack trace:', error.stack);
+        handleError('Error in loadCurrentAnimalsDetailed', error);
         const gridContainer = document.getElementById('currentAnimalsGrid');
         if (gridContainer) {
-            gridContainer.innerHTML = `<div class="empty-state"><p>Error loading current animals: ${error.message}</p></div>`;
+            const errorMessage = error && error.message ? error.message : 'Unknown error';
+            gridContainer.innerHTML = `<div class="empty-state"><p>Error loading current animals: ${escapeHtml(errorMessage)}</p></div>`;
         }
     }
 }
@@ -1063,7 +1075,7 @@ function viewAnimalInfo(appointmentId) {
                     </div>
                 ` : `
                     <div class="animal-photo-placeholder">
-                        <span class="animal-icon-large">${dog.animalType === 'Cat' ? '🐱' : '🐶'}</span>
+                        ${getAnimalIconLarge(dog.animalType || 'Dog')}
                     </div>
                 `}
                 <h2>${escapeHtml(dog.name)}</h2>
@@ -1126,7 +1138,7 @@ function viewAnimalInfo(appointmentId) {
             
             <div class="info-section card-details">
                 <div class="info-section-header">
-                    <h3>🐕 Dog Details</h3>
+                    <h3>${getAnimalIcon('Dog')} Dog Details</h3>
                 </div>
                 <div class="detail-grid">
                     ${dog.breed ? `<div class="detail-item"><strong>Breed:</strong> ${escapeHtml(dog.breed)}</div>` : ''}
