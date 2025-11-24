@@ -29,14 +29,14 @@ function handleError(message, error) {
 function getAnimalIcon(animalType) {
     const type = animalType || 'Dog';
     const iconFile = type === 'Cat' ? 'cat-icon.png' : 'dog-icon.png';
-    return `<img src="resources/images/${iconFile}" alt="${type}" class="animal-icon" style="width: 1.2em; height: 1.2em; vertical-align: middle; display: inline-block;">`;
+    return `<img src="./resources/images/${iconFile}" alt="${type}" class="animal-icon" style="width: 1.2em; height: 1.2em; vertical-align: middle; display: inline-block;">`;
 }
 
 // Get animal icon for large display
 function getAnimalIconLarge(animalType) {
     const type = animalType || 'Dog';
     const iconFile = type === 'Cat' ? 'cat-icon.png' : 'dog-icon.png';
-    return `<img src="resources/images/${iconFile}" alt="${type}" class="animal-icon-large" style="width: 3em; height: 3em; display: block; margin: 0 auto;">`;
+    return `<img src="./resources/images/${iconFile}" alt="${type}" class="animal-icon-large" style="width: 3em; height: 3em; display: block; margin: 0 auto;">`;
 }
 
 // Get animal placeholder photo (for when no photo is uploaded)
@@ -49,7 +49,7 @@ function getAnimalPlaceholderPhoto(animalType, size = 'medium') {
         large: '200px'
     };
     const photoSize = sizes[size] || sizes.medium;
-    return `<img src="resources/images/${iconFile}" alt="${type} placeholder" style="width: 100%; height: 100%; object-fit: contain;">`;
+    return `<img src="./resources/images/${iconFile}" alt="${type} placeholder" style="width: 100%; height: 100%; object-fit: contain;">`;
 }
 
 // Update today's stats
@@ -154,7 +154,6 @@ function loadArrivals() {
         // Determine animal type and icon
         const animalType = dog && dog.animalType ? dog.animalType : 'Dog';
         const animalIcon = getAnimalIcon(animalType);
-        const animalEmoji = animalType === 'Cat' ? '🐱' : '🐶';
         
         return `
             <div class="arrival-card">
@@ -221,7 +220,6 @@ function loadDepartures() {
         // Determine animal type and icon
         const animalType = dog && dog.animalType ? dog.animalType : 'Dog';
         const animalIcon = getAnimalIcon(animalType);
-        const animalEmoji = animalType === 'Cat' ? '🐱' : '🐶';
         
         return `
             <div class="departure-card">
@@ -377,7 +375,6 @@ function loadCurrentDogs() {
         // Determine animal type and icon
         const animalType = dog && dog.animalType ? dog.animalType : 'Dog';
         const animalIcon = getAnimalIcon(animalType);
-        const animalEmoji = animalType === 'Cat' ? '🐱' : '🐶';
         
         return `
             <div class="current-dog-card">
@@ -807,7 +804,6 @@ function loadCurrentAnimalsDetailed() {
         const firstPhoto = dog && dog.documents && dog.documents.length > 0 ? 
             dog.documents.find(doc => doc.type && doc.type.startsWith('image/')) : null;
         const animalType = dog && dog.animalType ? dog.animalType : 'Dog';
-        const animalEmoji = getAnimalIcon(animalType);
         
         return `
             <div class="current-animal-card" onclick="openCurrentAnimalDetail('${apt.id}')">
@@ -868,7 +864,6 @@ function openCurrentAnimalDetail(appointmentId) {
     const firstPhoto = dog.documents && dog.documents.length > 0 ? 
         dog.documents.find(doc => doc.type && doc.type.startsWith('image/')) : null;
     const animalType = dog.animalType || 'Dog';
-    const animalEmoji = animalType === 'Cat' ? '🐱' : '🐶';
     
     const checkInDate = appointment.checkinDateTime ? new Date(appointment.checkinDateTime) : (appointment.startDate ? new Date(appointment.startDate) : new Date());
     const daysStayed = Math.floor((new Date() - checkInDate) / (1000 * 60 * 60 * 24)) + 1;

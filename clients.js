@@ -83,7 +83,7 @@ function handleError(message, error) {
 function getAnimalIcon(animalType) {
     const type = animalType || 'Dog';
     const iconFile = type === 'Cat' ? 'cat-icon.png' : 'dog-icon.png';
-    return `<img src="resources/images/${iconFile}" alt="${type}" class="animal-icon" style="width: 1.2em; height: 1.2em; vertical-align: middle; display: inline-block;">`;
+    return `<img src="./resources/images/${iconFile}" alt="${type}" class="animal-icon" style="width: 1.2em; height: 1.2em; vertical-align: middle; display: inline-block;">`;
 }
 
 // Load clients from localStorage

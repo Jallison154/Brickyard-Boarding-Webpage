@@ -10,7 +10,7 @@ function getAnimalPlaceholderPhoto(animalType, size = 'medium') {
         large: '200px'
     };
     const photoSize = sizes[size] || sizes.medium;
-    return `<img src="resources/images/${iconFile}" alt="${type} placeholder" style="width: 100%; height: 100%; object-fit: contain;">`;
+    return `<img src="./resources/images/${iconFile}" alt="${type} placeholder" style="width: 100%; height: 100%; object-fit: contain;">`;
 }
 
 // Check-in/Check-out Functions
@@ -273,14 +273,11 @@ function showQuickAccess(type) {
                 const firstPhoto = dog && dog.documents && dog.documents.length > 0 ? 
                     dog.documents.find(doc => doc.type && doc.type.startsWith('image/')) : null;
                 
-                const animalEmoji = animalType === 'Cat' ? '🐱' : '🐶';
-                
                 return {
                     client: apt.clientName,
                     dog: apt.dogName,
                     animalType: animalType,
                     photo: firstPhoto,
-                    animalEmoji: animalEmoji,
                     vet: client ? client.vetName : 'Not provided',
                     vetPhone: client ? client.vetPhone : 'Not provided',
                     emergency: client ? client.emergencyContact : 'Not provided',
@@ -567,7 +564,6 @@ function checkVaccinationAlerts() {
             const firstPhoto = dog.documents && dog.documents.length > 0 ? 
                 dog.documents.find(doc => doc.type && doc.type.startsWith('image/')) : null;
             const animalType = dog.animalType || 'Dog';
-            const animalEmoji = animalType === 'Cat' ? '🐱' : '🐶';
             
             // Check rabies expiration
             let rabiesStatus = '⚠️ No date';
@@ -639,7 +635,6 @@ function checkVaccinationAlerts() {
             const firstPhoto = dog.documents && dog.documents.length > 0 ? 
                 dog.documents.find(doc => doc.type && doc.type.startsWith('image/')) : null;
             const animalType = dog.animalType || 'Dog';
-            const animalEmoji = animalType === 'Cat' ? '🐱' : '🐶';
             
             // Check rabies expiration
             let rabiesStatus = '⚠️ No date';
@@ -754,7 +749,6 @@ function filterVaccinations(filter) {
                 const firstPhoto = dog.documents && dog.documents.length > 0 ? 
                     dog.documents.find(doc => doc.type && doc.type.startsWith('image/')) : null;
                 const animalType = dog.animalType || 'Dog';
-                const animalEmoji = animalType === 'Cat' ? '🐱' : '🐶';
                 
                 let rabiesStatus = '⚠️ No date';
                 let rabiesClass = 'status-pending';
@@ -781,7 +775,7 @@ function filterVaccinations(filter) {
                                     <img src="${firstPhoto.data}" alt="${escapeHtml(apt.dogName)}" class="vet-photo-img">
                                 ` : `
                                     <div class="vet-photo-placeholder ${animalType.toLowerCase()}">
-                                        ${animalEmoji}
+                                        ${getAnimalPlaceholderPhoto(animalType, 'medium')}
                                     </div>
                                 `}
                             </div>
